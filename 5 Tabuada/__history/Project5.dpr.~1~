@@ -1,0 +1,14 @@
+program Project5;
+
+uses
+  Forms,
+  exercicio5 in '..\Exercicios_Lista_01\exercicio5.pas' {Form1};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TForm1, Form1);
+  Application.Run;
+end.
