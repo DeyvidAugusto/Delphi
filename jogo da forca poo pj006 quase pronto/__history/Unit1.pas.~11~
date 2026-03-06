@@ -1,0 +1,100 @@
+unit Unit1;
+
+interface
+
+uses
+   Windows, Messages, SysUtils, Variants,
+   Classes, Graphics, Controls, Forms, Dialogs,
+   Unit3, StdCtrls;
+
+type
+   TForm1 = class(TForm)
+    Button1: TButton;
+    Button2: TButton;
+    Display: TLabel;
+    Memo1: TMemo;
+    Label1: TLabel;
+    Label2: TLabel;
+    procedure FormCreate(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+   private
+      JogoForca: TJogoForca;
+   public
+      function GerarPalavra: string;
+   end;
+
+var
+   Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+   JogoForca := nil;
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+   JogoForca := TJogoForca.Create(
+      GerarPalavra(),
+      strtoint(InputBox('Digite a Quantidade de Jogadores', 'Quantidade', ''))
+      );
+
+   Display.Caption := JogoForca.Display;
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+var
+   Letra: string;
+begin
+   Letra := InputBox('Informe uma letra ' + JogoForca.JogadorAtual, 'Letra', '');
+
+   if Letra = '' then
+      raise Exception.Create('Um letra deve ser informada.');
+
+   JogoForca.Jogar(Letra[1]);
+
+   Display.Caption := JogoForca.Display;
+
+   Label1.Caption := JogoForca.GetLetrasUtilizadas;
+
+   Memo1.Lines := JogoForca.GetEstatisticas;
+
+   if JogoForca.GameOver then
+      ShowMessage('Fim de jogo!'#13#13'Vencedor: ' + JogoForca.GetNomeVencedor);
+    end;
+
+procedure TForm1.FormDestroy(Sender: TObject);
+begin
+   if JogoForca <> nil then
+      JogoForca.Free;
+end;
+
+function TForm1.GerarPalavra: string;
+var
+   ListaPalavras: TStringList;
+begin
+   Result := '';
+   ListaPalavras := TStringList.Create;
+   try
+     if FileExists('C:\Users\pjr006\OneDrive\Desktop (ATENÇÃO !!! Amanhã esta pasta será deletada, não sincronizar pastas do Usuário)\jogo da forca poo\jogo da forca poo pj006\Palavras_Aleatorias.txt') then
+     begin
+       ListaPalavras.LoadFromFile('C:\Users\pjr006\OneDrive\Desktop (ATENÇÃO !!! Amanhã esta pasta será deletada, não sincronizar pastas do Usuário)\jogo da forca poo\jogo da forca poo pj006\Palavras_Aleatorias.txt');
+       if ListaPalavras.Count > 0 then
+       begin
+         Randomize;
+         Result := ListaPalavras[Random(ListaPalavras.Count)];
+       end;
+     end;
+   finally
+     ListaPalavras.free;
+
+   end;
+end;
+
+
+end.
