@@ -1,0 +1,100 @@
+﻿unit Paginacao;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, StrUtils;
+
+type
+  TForm1 = class(TForm)
+    Label1: TLabel;
+    EdtTamanhoArray: TEdit;
+    Label2: TLabel;
+    EdtQtdItens: TEdit;
+    BtnDecrescente: TButton;
+    BtnCrescente: TButton;
+    MemoNumeros: TMemo;
+    BtnAnterior: TButton;
+    BtnProximo: TButton;
+    QtdPag: TLabel;
+    BtnSair: TButton;
+    BtnGerarLista: TButton;
+    procedure BtnGerarListaClick(Sender: TObject);
+    procedure BtnProximoClick(Sender: TObject);
+    procedure BtnAnteriorClick(Sender: TObject);
+  private
+    TamanhoArray: integer;
+    QtdItens : integer;
+    ArrayAleatorio : TStringList;
+    UltimoIndexSalvo : integer;
+  public
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+
+
+procedure TForm1.BtnGerarListaClick(Sender: TObject);
+var
+  I: integer;
+  NumAleatorio : string;
+begin
+  TamanhoArray := strtoint(EdtTamanhoArray.Text);
+  QtdItens := strtoint(EdtQtdItens.Text);
+  UltimoIndexSalvo := QtdItens - 1;
+  Randomize;
+  ArrayAleatorio := TStringList.Create;
+
+  repeat
+    NumAleatorio := inttostr(Random(TamanhoArray + 100));
+    if ArrayAleatorio.IndexOf(NumAleatorio) = -1 then
+    begin
+      ArrayAleatorio.add(NumAleatorio);
+    end;
+  until ArrayAleatorio.Count = TamanhoArray;
+
+  MemoNumeros.Lines.Clear;
+  for I := 0 to QtdItens - 1 do
+  begin
+    MemoNumeros.Lines.Add(ArrayAleatorio[I]);
+  end;
+
+end;
+
+procedure TForm1.BtnAnteriorClick(Sender: TObject);
+var
+  I : integer;
+begin
+  UltimoIndexSalvo := UltimoIndexSalvo - QtdItens-1;
+  MemoNumeros.Lines.Clear;
+  for I := UltimoIndexSalvo to UltimoIndexSalvo - QtdItens  do
+  begin
+    MemoNumeros.Lines.Add(ArrayAleatorio[I]);
+  end;
+
+
+end;
+
+
+
+procedure TForm1.BtnProximoClick(Sender: TObject);
+var
+  I : integer;
+begin
+  MemoNumeros.Lines.Clear;
+  for I := UltimoIndexSalvo to UltimoIndexSalvo + QtdItens -1 do
+  begin
+    MemoNumeros.Lines.Add(ArrayAleatorio[I]);
+  end;
+  UltimoIndexSalvo := UltimoIndexSalvo + QtdItens - 1;
+
+
+end;
+
+end.

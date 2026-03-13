@@ -1,0 +1,64 @@
+ï»¿unit Paginação;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, StrUtils;
+
+type
+  TForm1 = class(TForm)
+    Label1: TLabel;
+    EdtTamanhoArray: TEdit;
+    Label2: TLabel;
+    EdtQtdItens: TEdit;
+    BtnDecrescente: TButton;
+    BtnCrescente: TButton;
+    Memo1: TMemo;
+    BtnAnterior: TButton;
+    BtnProximo: TButton;
+    Label3: TLabel;
+    BtnSair: TButton;
+    BtnGerarLista: TButton;
+    procedure BtnGerarListaClick(Sender: TObject);
+  private
+    TamanhoArray: integer;
+    QtdItens : integer;
+    ArrayAleatorio : array of string;
+  public
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+
+procedure TForm1.BtnGerarListaClick(Sender: TObject);
+var
+  I : integer;
+  NumAleatorio : string;
+begin
+  TamanhoArray := strtoint(EdtTamanhoArray.Text);
+  QtdItens := strtoint(EdtQtdItens.Text);
+  Randomize;
+
+  SetLength(ArrayAleatorio, TamanhoArray);
+
+  I := 0;                                                       
+  repeat
+    NumAleatorio := inttostr(Random(TamanhoArray + 100));
+    if not MatchStr(NumAleatorio, ArrayAleatorio) then
+      ArrayAleatorio[I] := NumAleatorio;
+      I := I + 1
+  until Length(ArrayAleatorio) = TamanhoArray;
+
+
+
+    
+
+end;
+
+end.
