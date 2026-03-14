@@ -2,7 +2,11 @@ program ProjectPaginacao;
 
 uses
   Forms,
-  Paginacao in 'Paginacao.pas' {Form1};
+  Form in 'Form.pas' {Form1},
+  GeradorLista in 'GeradorLista.pas',
+  Paginador in 'Paginador.pas',
+  Ordenador in 'Ordenador.pas',
+  Cronometro in 'Cronometro.pas';
 
 {$R *.res}
 

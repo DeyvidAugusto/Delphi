@@ -1,0 +1,42 @@
+unit GeradorLista;
+
+interface
+uses
+  Classes, SysUtils;
+
+type
+  TGeradorLista = class
+  public
+    class function GerarAleatorio(Quantidade: integer): TStringList;
+  end;
+
+implementation
+
+class function TGeradorLista.GerarAleatorio(Quantidade: integer): TStringList;
+var
+  Pool: TStringList;
+  I, J: integer;
+  Temp: string;
+begin
+  Randomize;
+  Pool := TStringList.Create;
+  try
+    for I := 1 to Quantidade do
+      Pool.Add(IntToStr(I));
+
+    for I := Pool.Count - 1 downto 1 do
+    begin
+      J       := Random(I + 1);
+      Temp    := Pool[I];
+      Pool[I] := Pool[J];
+      Pool[J] := Temp;
+    end;
+
+    Result := Pool;
+  except
+    Pool.Free;
+    raise;
+  end;
+end;
+
+end.
