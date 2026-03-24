@@ -1,0 +1,112 @@
+program Project1;
+
+{$APPTYPE CONSOLE}
+{$R *.res}
+
+uses
+  System.SysUtils,
+  Winapi.Windows;
+
+type
+   TarrayHelper = record
+      class procedure insert(var a: Tarray<integer>; index, value: integer); static;
+      class procedure sort(var a: Tarray<integer>); static;
+      class function equal(const a, b: Tarray<integer>): boolean; static;
+   end;
+
+{ TarrayHelper }
+
+class procedure TarrayHelper.insert(var a: Tarray<integer>; index, value: integer);
+var
+   count: integer;
+begin
+   count := length(a);
+
+   setLength(a, count + 1);
+
+   { desloca os elementos à direita em bloco }
+   if index < count then
+      move(a[index], a[index + 1], (count - index) * sizeOf(integer));
+
+   a[index] := value;
+end;
+
+class procedure TarrayHelper.sort(var a: Tarray<integer>);
+var
+   aux: Tarray<integer>;
+   i, x: integer;
+begin
+   aux := nil;
+
+   x := 0;
+
+   for i := 0 to high(a) do
+   begin
+      while (x > 0) and (a[i] < aux[x]) do
+         dec(x);
+
+      while (x <= high(aux)) and (a[i] > aux[x]) do
+         inc(x);
+
+      insert(aux, x, a[i]);
+   end;
+
+   a := aux;
+end;
+
+class function TarrayHelper.equal(const a, b: Tarray<integer>): boolean;
+begin
+   result := (length(A) = length(B)) and ((length(A) = 0) or compareMem(@A[0], @B[0], length(A) * sizeOf(Integer)));
+end;
+
+procedure bubbleSort(var a: Tarray<integer>);
+var
+   i, j, aux: integer;
+begin
+   for i := high(a) downto low(a) + 1 do
+   begin
+      for j := low(a) to i - 1 do
+      begin
+         if a[j] > a[j + 1] then
+         begin
+            aux  := a[j];
+            a[j] := a[j + 1];
+            a[j + 1] := aux;
+         end;
+      end;
+   end;
+end;
+
+var
+   a, b: Tarray<integer>;
+   i: integer;
+   f, s, e: int64;
+begin
+   a := nil;
+
+   randomize;
+   for i := 1 to 100000 do
+      a := a + [random(100)];
+
+   b := copy(a, 0, length(a));
+
+   if TarrayHelper.equal(a, b) then
+      writeln('Idênticos na entrada');
+
+   queryPerformanceFrequency(f);
+   queryPerformanceCounter(s);
+   TarrayHelper.sort(a);
+   queryPerformanceCounter(e);
+   writeln('Meu sort: ' + floatToStrF((e - s)/f, ffNumber, 15, 6));
+
+   queryPerformanceFrequency(f);
+   queryPerformanceCounter(s);
+   bubblesort(b);
+   queryPerformanceCounter(e);
+   writeln('BubbleSort: ' + floatToStrF((e - s)/f, ffNumber, 15, 6));
+
+   if TarrayHelper.equal(a, b) then
+      writeln('Idênticos na saída');
+
+   readln;
+end.
