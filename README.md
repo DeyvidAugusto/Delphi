@@ -38,7 +38,7 @@ Exercícios mais avançados:
 
 ## Pré-requisitos
 
-- Delphi IDE (versão compatível com os projetos, como Delphi 10 ou superior).
+- Delphi IDE (versão compatível com os projetos, os exercicios foram feitos para rodar no delphi 2007, talvez tenha algum erro ao tentar rodar em versões mais novas).
 - Windows (já que Delphi é principalmente para Windows).
 
 ## Como Executar
