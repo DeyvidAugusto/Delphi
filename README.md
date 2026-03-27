@@ -7,7 +7,9 @@ Este repositório contém uma coleção de exercícios em Delphi desenvolvidos p
 O projeto está organizado em listas de exercícios:
 
 ### Lista_01
+
 Contém exercícios básicos para iniciantes:
+
 - **1 Olá Mundo**: Primeiro programa em Delphi.
 - **2 Média Notas**: Cálculo da média de notas.
 - **3 Calculadora**: Implementação de uma calculadora simples.
@@ -19,15 +21,19 @@ Contém exercícios básicos para iniciantes:
 - **9 Primos**: Verificação de números primos.
 
 ### Lista_02
+
 Exercícios mais avançados:
+
 - **Contador de Palavras**: Contagem de palavras em um texto.
 - **Flipper**: Implementação de um flipper (jogo).
 - **Forca**: Jogo da forca.
 
 ### Lista_03
+
 - **10_Paginacao_Array**: Paginação de arrays.
 
 ### Meu sort
+
 - **Meu sort**: Implementação de algoritmo de ordenação personalizado.
 
 ## Pré-requisitos
