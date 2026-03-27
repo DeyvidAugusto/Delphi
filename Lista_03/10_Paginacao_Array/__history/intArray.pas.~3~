@@ -1,0 +1,8 @@
+unit intArray;
+
+interface
+type
+   TMyIntArray = array of integer;
+implementation
+
+end.

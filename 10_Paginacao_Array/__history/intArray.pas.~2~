@@ -1,8 +1,0 @@
-unit intArray;
-
-interface
-type
-   TMyintArray = array of integer;
-implementation
-
-end.

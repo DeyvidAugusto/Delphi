@@ -1,0 +1,8 @@
+unit intArray;
+
+interface
+type
+   TintArray = array of integer;
+implementation
+
+end.
