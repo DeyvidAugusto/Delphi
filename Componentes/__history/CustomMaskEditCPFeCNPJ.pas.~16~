@@ -1,0 +1,152 @@
+unit CustomMaskEditCPFeCNPJ;
+
+interface
+
+uses
+  SysUtils, Classes, Controls, StdCtrls, Mask, Windows, Messages;
+
+type
+  TCustomMaskEditCPFeCNPJ = class(TCustomMaskEdit)
+  private
+    FIsCNPJ: boolean;
+    FIsCPF: boolean;
+    function ValidarCnpj(num: string): boolean;
+    function ValidarCpf(num: string): boolean;
+  protected
+    procedure KeyPressInteiro(var Key: Char);
+    procedure SetIsCNPJ(const CNPJ: boolean);
+    procedure SetIsCPF(const CPF: boolean);
+    procedure DoExit; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+  published
+    property IsCNPJ: boolean read FIsCNPJ write SetIsCNPJ;
+    property IsCPF: boolean read FIsCPF write SetIsCPF;
+  end;
+
+procedure Register;
+
+implementation
+
+procedure TCustomMaskEditCPFeCNPJ.KeyPressInteiro(var Key: Char);
+begin
+   if not (Key in ['0'..'9', #8]) then
+      Key := #0;
+end;
+
+procedure TCustomMaskEditCPFeCNPJ.DoExit;
+var
+   Validado: Boolean;
+begin
+   Validado := False;
+   if FIsCPF = True then
+   begin
+      Validado := ValidarCpf(Text)
+   end
+   else
+   if FisCNPJ = True then
+   begin
+      Validado := ValidarCnpj(Text);
+   end;
+
+   if Validado = False then
+      PostMessage(Handle, WM_SETFOCUS, 0, 0);
+
+   inherited DoExit;
+end;
+
+procedure TCustomMaskEditCPFeCNPJ.SetIsCNPJ(const CNPJ: boolean);
+begin
+   FIsCNPJ := True;
+   FIsCPF := False;
+   EditMask := '00.000.000/0000-00;1;_';
+end;
+
+procedure TCustomMaskEditCPFeCNPJ.SetIsCPF(const CPF: boolean);
+begin
+   FIsCPF := True;
+   FIsCNPJ := False;
+   EditMask := '000.000.000-00;1;_';
+end;
+
+constructor TCustomMaskEditCPFeCNPJ.Create(AOwner: TComponent);
+begin
+   inherited Create(AOwner);
+   Text := '';
+end;
+
+function TCustomMaskEditCPFeCNPJ.ValidarCnpj(num: string): boolean;
+var
+   n1,n2,n3,n4,n5,n6,n7,n8,n9,n10,n11,n12: integer;
+   d1,d2: integer;
+   digitado, calculado, CleanText: string;
+
+begin
+   CleanText := StringReplace(num, '.', '', [rfReplaceAll]);
+   CleanText := StringReplace(CleanText, '-', '', [rfReplaceAll]);
+   CleanText := StringReplace(CleanText, '/', '', [rfReplaceAll]);
+   n1:=StrToInt(CleanText[1]);
+   n2:=StrToInt(CleanText[2]);
+   n3:=StrToInt(CleanText[3]);
+   n4:=StrToInt(CleanText[4]);
+   n5:=StrToInt(CleanText[5]);
+   n6:=StrToInt(CleanText[6]);
+   n7:=StrToInt(CleanText[7]);
+   n8:=StrToInt(CleanText[8]);
+   n9:=StrToInt(CleanText[9]);
+   n10:=StrToInt(CleanText[10]);
+   n11:=StrToInt(CleanText[11]);
+   n12:=StrToInt(CleanText[12]);
+   d1:=n12*2+n11*3+n10*4+n9*5+n8*6+n7*7+n6*8+n5*9+n4*2+n3*3+n2*4+n1*5;
+   d1:=11-(d1 mod 11);
+   if d1>=10 then d1:=0;
+     d2:=d1*2+n12*3+n11*4+n10*5+n9*6+n8*7+n7*8+n6*9+n5*2+n4*3+n3*4+n2*5+n1*6;
+     d2:=11-(d2 mod 11);
+   if d2>=10 then d2:=0;
+     calculado:=inttostr(d1)+inttostr(d2);
+     digitado:=CleanText[13]+CleanText[14];
+   if calculado=digitado then
+     Result:=true
+   else
+     Result:=false;
+end;
+
+function TCustomMaskEditCPFeCNPJ.ValidarCpf(num: string): boolean;
+var
+   n1,n2,n3,n4,n5,n6,n7,n8,n9: integer;
+   d1,d2: integer;
+   digitado, calculado, CleanText: string;
+begin
+   CleanText := StringReplace(num, '.', '', [rfReplaceAll]);
+   CleanText := StringReplace(CleanText, '-', '', [rfReplaceAll]);
+   CleanText := StringReplace(CleanText, '/', '', [rfReplaceAll]);
+   n1:=StrToInt(CleanText[1]);
+   n2:=StrToInt(CleanText[2]);
+   n3:=StrToInt(CleanText[3]);
+   n4:=StrToInt(CleanText[4]);
+   n5:=StrToInt(CleanText[5]);
+   n6:=StrToInt(CleanText[6]);
+   n7:=StrToInt(CleanText[7]);
+   n8:=StrToInt(CleanText[8]);
+   n9:=StrToInt(CleanText[9]);
+   d1:=n9*2+n8*3+n7*4+n6*5+n5*6+n4*7+n3*8+n2*9+n1*10;
+   d1:=11-(d1 mod 11);
+   if d1>=10 then d1:=0;
+     d2:=d1*2+n9*3+n8*4+n7*5+n6*6+n5*7+n4*8+n3*9+n2*10+n1*11;
+     d2:=11-(d2 mod 11);
+   if d2>=10 then d2:=0;
+     calculado:=inttostr(d1)+inttostr(d2);
+     digitado:=CleanText[10]+CleanText[11];
+   if calculado=digitado then
+     Result:=true
+   else
+     Result:=false;
+end;
+
+
+procedure Register;
+begin
+  RegisterComponents('Delphi Projects | Delphi Files', [TCustomMaskEditCPFeCNPJ]);
+end;
+
+end.

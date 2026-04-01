@@ -1,0 +1,60 @@
+unit CustomMaskEditCPFeCNPJ;
+
+interface
+
+uses
+  SysUtils, Classes, Controls, StdCtrls, Mask;
+
+type
+  TCustomMaskEditCPFeCNPJ = class(TCustomMaskEdit)
+  private
+    FIsCNPJ: boolean;
+    FIsCPF: boolean;
+  protected
+    procedure KeyPressInteiro(var Key: Char);
+    procedure SetIsCNPJ(const CNPJ: boolean);
+    procedure SetIsCPF(const CPF: boolean);
+  public
+    constructor Create(AOwner: TComponent); override;
+  published
+    property IsCNPJ: boolean read FIsCNPJ write SetIsCNPJ;
+    property IsCPF: boolean read FIsCPF write SetIsCPF;
+  end;
+
+procedure Register;
+
+implementation
+
+procedure TCustomMaskEditCPFeCNPJ.KeyPressInteiro(var Key: Char);
+begin
+   if not (Key in ['0'..'9', #8]) then
+      Key := #0;
+end;
+
+procedure TCustomMaskEditCPFeCNPJ.SetIsCNPJ(const CNPJ: boolean);
+begin
+   FIsCNPJ := True;
+   FIsCPF := False;
+   EditMask := '00.000.000/0000-00;1;';
+end;
+
+procedure TCustomMaskEditCPFeCNPJ.SetIsCPF(const CPF: boolean);
+begin
+   FIsCPF := True;
+   FIsCNPJ := False;
+   EditMask := '000.000.000-00;1;';
+end;
+
+constructor TCustomMaskEditCPFeCNPJ.Create(AOwner: TComponent);
+begin
+   inherited Create(AOwner);
+   Text := '';
+end;
+
+
+procedure Register;
+begin
+  RegisterComponents('Delphi Projects | Delphi Files', [TCustomMaskEditCPFeCNPJ]);
+end;
+
+end.
