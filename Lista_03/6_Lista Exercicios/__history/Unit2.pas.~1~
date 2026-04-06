@@ -1,0 +1,35 @@
+unit Unit2;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls;
+
+type
+  TForm2 = class(TForm)
+    Memo1: TMemo;
+  private
+    procedure ExibirLista(var Lista: TStringList);
+
+  public
+
+  end;
+
+var
+  Form2: TForm2;
+
+implementation
+
+{$R *.dfm}
+procedure TForm2.ExibirLista(var Lista : TStringList);
+var
+  I: Integer;
+begin
+  for I := 0 to Lista.Count - 1 do
+    Memo1.Lines.Add(Lista[1]);
+  TForm2.Show;
+
+end;
+
+end.

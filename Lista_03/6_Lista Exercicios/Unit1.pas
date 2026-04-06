@@ -1,0 +1,241 @@
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Math, Unit2;
+
+type
+  TRecordSalarios = record
+      ID : Integer;
+      Nome : string;
+      Salario : Double;
+    end;
+  TForm1 = class(TForm)
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    BtnLinhas: TButton;
+    BtnMedia: TButton;
+    BtnColunas: TButton;
+    BtnDescritivas: TButton;
+    BtnNomes: TButton;
+    Label7: TLabel;
+    BtnQ6: TButton;
+    procedure BtnMediaClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure BtnLinhasClick(Sender: TObject);
+    procedure BtnColunasClick(Sender: TObject);
+    procedure BtnDescritivasClick(Sender: TObject);
+    procedure OrdenarListaBySalario(var Lista: array of TRecordSalarios);
+    procedure OrdenarListaByNome(var Lista: array of TRecordSalarios);
+    procedure BtnNomesClick(Sender: TObject);
+    procedure BtnQ6Click(Sender: TObject);
+  private
+    TabelaSalarios : Array[0..5] of TRecordSalarios;
+    Qtd_Colunas: integer;
+
+  public
+
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.FormCreate(Sender: TObject);
+var
+  Dados : TStringList;
+  ListaDelimitados : TStringList;
+  I: Integer;
+  Caminho : string;
+begin
+  Dados := TStringList.Create;
+  ExtractFilePath(Caminho);
+  Dados.LoadFromFile(Caminho+'Dados.txt');
+  ListaDelimitados := TStringList.Create;
+  ListaDelimitados.Delimiter := ';';
+  ListaDelimitados.StrictDelimiter := True;
+
+  try
+    for I := 0 to Dados.Count - 1 do
+    begin
+      ListaDelimitados.DelimitedText := Dados[I];
+      with TabelaSalarios[I] do
+      begin
+        ID := strtoint(ListaDelimitados[0]);
+        Nome := ListaDelimitados[1];
+        Salario := strtofloat(ListaDelimitados[2]);
+      end;
+    end;
+  finally
+    Qtd_Colunas := ListaDelimitados.Count;
+    ListaDelimitados.free;
+    Dados.Free;
+  end;
+end;
+
+
+procedure TForm1.BtnMediaClick(Sender: TObject);
+var
+  Media : Double;
+  I: Integer;
+begin
+  Media := 0;
+  for I := 0 to Length(TabelaSalarios) do
+  begin
+    Media := (Media + TabelaSalarios[I].Salario);
+  end;
+  Media := Media/Length(TabelaSalarios);
+  ShowMessage(Format('R$ ' + '%.2f' , [Media]));
+end;
+
+
+procedure TForm1.BtnColunasClick(Sender: TObject);
+begin
+  ShowMessage('A Quantidade de Colunas é ' + inttostr(Qtd_Colunas));
+end;
+
+procedure TForm1.BtnLinhasClick(Sender: TObject);
+begin
+  ShowMessage('A Quantidade de Linhas é ' + inttostr(Length(TabelaSalarios)));
+end;
+
+procedure TForm1.BtnDescritivasClick(Sender: TObject);
+var
+  Minimo : double;
+  PQuatril : double;
+  Media : double;
+  Mediana : double;
+  TQuatril : double;
+  Maximo : double;
+  DesvioPadrao : double;
+  I : Integer;
+  QtdItems : double;
+
+
+begin
+  OrdenarListaBySalario(TabelaSalarios);
+{CALCULO DO MINIMO}
+  Minimo := TabelaSalarios[0].Salario;
+{CALCULO DO 1° QUARTIL}
+  QtdItems := Length(TabelaSalarios);
+  QtdItems := (QtdItems + 1) / 4;
+  PQuatril := TabelaSalarios[Round(QtdItems) -1].Salario;
+{CALCULO DA MEDIA}
+  Media := 0;
+  for I := 0 to Length(TabelaSalarios) do
+  begin
+    Media := (Media + TabelaSalarios[I].Salario);
+  end;
+  Media := Media/Length(TabelaSalarios);
+{CALCULO DA MEDIANA}
+  Mediana := (TabelaSalarios[2].Salario + TabelaSalarios[3].Salario) / 2;
+{CALCULO DO 3° QUARTIL}
+  QtdItems := Length(TabelaSalarios);
+  QtdItems := 3*(QtdItems + 1) / 4;
+  TQuatril := TabelaSalarios[Round(QtdItems) -1].Salario;
+{CALCULO DO MAXIMO}
+  Maximo := TabelaSalarios[High(TabelaSalarios)].Salario;
+{CALCULO DO DESVIO-PADRÃO}
+  DesvioPadrao := 0;
+  for I := 0 to Length(TabelaSalarios) - 1 do
+    DesvioPadrao := DesvioPadrao + (sqr(TabelaSalarios[I].Salario - Media));
+
+  DesvioPadrao := sqrt(DesvioPadrao / Length(TabelaSalarios));
+
+  ShowMessage(Format('Minimo: R$ ' + '%.2f', [Minimo]) + #13 + #13 +
+              Format('1° Quatril: R$ ' + '%.2f', [PQuatril]) + #13 + #13 +
+              Format('Media: R$ ' + '%.2f', [Media]) + #13 + #13 +
+              Format('Mediana: R$ ' + '%.2f', [Mediana]) + #13 + #13 +
+              Format('3° Quatril: R$ ' + '%.2f', [TQuatril]) + #13 + #13 +
+              Format('Maximo: R$ ' + '%.2f', [Maximo]) + #13 + #13 +
+              Format('Desvio Padrão: R$ ' + '%.2f', [DesvioPadrao]));
+
+end;
+
+procedure TForm1.BtnNomesClick(Sender: TObject);
+var
+  I: Integer;
+  ListaNomesSalario : TStringList;
+begin
+try
+  OrdenarListaByNome(TabelaSalarios);
+  ListaNomesSalario := TStringList.Create;
+
+  for I := 0 to Length(TabelaSalarios) -1 do
+  begin
+    ListaNomesSalario.add(Format('%s: %n', [TabelaSalarios[I].Nome, TabelaSalarios[I].Salario]));
+  end;
+  Form2.ExibirLista(ListaNomesSalario);
+
+finally
+  ListaNomesSalario.free;
+end;
+
+
+end;
+
+procedure TForm1.BtnQ6Click(Sender: TObject);
+var
+  I: Integer;
+  ListaNomesSalario : TStringList;
+begin
+try
+  OrdenarListaByNome(TabelaSalarios);
+  ListaNomesSalario := TStringList.Create;
+
+  for I := 0 to Length(TabelaSalarios) -1 do
+  begin
+  if TabelaSalarios[I].Nome = TabelaSalarios[I-1].Nome then
+    continue
+  else
+    ListaNomesSalario.add(Format('%s: %n', [TabelaSalarios[I].Nome, TabelaSalarios[I].Salario]));
+  end;
+  Form2.ExibirLista(ListaNomesSalario);
+
+finally
+  ListaNomesSalario.free;
+end;
+
+end;
+
+procedure TForm1.OrdenarListaBySalario(var Lista: array of TRecordSalarios);
+var
+  i, j : Integer;
+  Temp : TRecordSalarios;
+begin
+  for i := Low(Lista) to High(Lista) - 1 do
+    for j := i + 1 to High(Lista) do
+      if Lista[i].Salario > Lista[j].Salario then
+      begin
+        Temp := Lista[i];
+        Lista[i] := Lista[j];
+        Lista[j] := Temp;
+      end;
+end;
+
+procedure TForm1.OrdenarListaByNome(var Lista: array of TRecordSalarios);
+var
+  i, j : Integer;
+  Temp : TRecordSalarios;
+begin
+  for i := Low(Lista) to High(Lista) - 1 do
+    for j := i + 1 to High(Lista) do
+      if (Lista[i].Nome > Lista[j].Nome) or
+      ((Lista[i].Nome = Lista[j].Nome) and (Lista[i].Salario < Lista[j].Salario)) then
+      begin
+        Temp := Lista[i];
+        Lista[i] := Lista[j];
+        Lista[j] := Temp;
+      end;
+end;
+
+end.

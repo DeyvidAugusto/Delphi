@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2026/03/12 16:50:53.294.pas,C:\Users\pjr006\Documents\RAD Studio\Projects\Unit2.pas=C:\Users\pjr006\Desktop\9) Relatorio de Salario\RelatorioMemo.pas</Transaction>
+    <Transaction>2026/03/12 16:50:53.294.dfm,C:\Users\pjr006\Documents\RAD Studio\Projects\Unit2.dfm=C:\Users\pjr006\Desktop\9) Relatorio de Salario\RelatorioMemo.dfm</Transaction>
+    <Transaction>2026/03/12 16:51:31.903.pas,C:\Users\pjr006\Documents\RAD Studio\Projects\Unit1.pas=C:\Users\pjr006\Desktop\9) Relatorio de Salario\FolhaDePagamento.pas</Transaction>
+    <Transaction>2026/03/12 16:51:31.903.dfm,C:\Users\pjr006\Documents\RAD Studio\Projects\Unit1.dfm=C:\Users\pjr006\Desktop\9) Relatorio de Salario\FolhaDePagamento.dfm</Transaction>
+    <Transaction>2026/03/12 16:51:56.159.dproj,C:\Users\pjr006\Documents\RAD Studio\Projects\Project1.dproj=C:\Users\pjr006\Desktop\9) Relatorio de Salario\ProjectFolhaDePagamento.dproj</Transaction>
+  </Transactions>
+</BorlandProject>

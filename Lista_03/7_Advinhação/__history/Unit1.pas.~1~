@@ -1,0 +1,35 @@
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, ExtCtrls;
+
+type
+  TForm1 = class(TForm)
+    CheckBox1: TCheckBox;
+    CheckBox2: TCheckBox;
+    CheckBox3: TCheckBox;
+    CheckBox4: TCheckBox;
+    Image1: TImage;
+    Image2: TImage;
+    Image3: TImage;
+    Image4: TImage;
+    CheckBox5: TCheckBox;
+    Image5: TImage;
+    Label1: TLabel;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+end.

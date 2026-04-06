@@ -1,0 +1,127 @@
+object Form1: TForm1
+  Left = 0
+  Top = 0
+  Caption = 'Form1'
+  ClientHeight = 261
+  ClientWidth = 887
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Label1: TLabel
+    Left = 8
+    Top = 8
+    Width = 156
+    Height = 13
+    Caption = '1) Qual o valor do sal'#225'rio m'#233'dio?'
+  end
+  object Label2: TLabel
+    Left = 8
+    Top = 58
+    Width = 160
+    Height = 13
+    Caption = '2) Qual '#233' a quantidade de linhas?'
+  end
+  object Label3: TLabel
+    Left = 8
+    Top = 107
+    Width = 169
+    Height = 13
+    Caption = '3) Qual '#233' a quantidade de colunas?'
+  end
+  object Label4: TLabel
+    Left = 8
+    Top = 157
+    Width = 619
+    Height = 13
+    Caption = 
+      '4) Calcule as principais estat'#237'sticas descritivas do sal'#225'rio: m'#237 +
+      'nimo, 1'#186' quartil, m'#233'dia, mediana, 3'#186' quartil, m'#225'ximo e desvio-pa' +
+      'dr'#227'o.'
+  end
+  object Label5: TLabel
+    Left = 8
+    Top = 209
+    Width = 537
+    Height = 13
+    Caption = 
+      '5) Ordene em ordem alfab'#233'tica considerando a coluna de nomes, em' +
+      ' caso de empate, considere o maior sal'#225'rio.'
+  end
+  object Label6: TLabel
+    Left = 295
+    Top = 8
+    Width = 584
+    Height = 13
+    Caption = 
+      '6) Considere duplicar os dados repetido por nome considerando o ' +
+      'maior sal'#225'rio. Isto '#233', caso o nome se repita, remova as '
+  end
+  object Label7: TLabel
+    Left = 295
+    Top = 27
+    Width = 219
+    Height = 13
+    Caption = 'linhas com menor sal'#225'rio para o mesmo nome.'
+  end
+  object BtnLinhas: TButton
+    Left = 8
+    Top = 76
+    Width = 75
+    Height = 25
+    Caption = 'Resposta'
+    TabOrder = 0
+    OnClick = BtnLinhasClick
+  end
+  object BtnMedia: TButton
+    Left = 8
+    Top = 27
+    Width = 75
+    Height = 25
+    Caption = 'Resposta'
+    TabOrder = 1
+    OnClick = BtnMediaClick
+  end
+  object BtnColunas: TButton
+    Left = 8
+    Top = 126
+    Width = 75
+    Height = 25
+    Caption = 'Resposta'
+    TabOrder = 2
+    OnClick = BtnColunasClick
+  end
+  object BtnDescritivas: TButton
+    Left = 8
+    Top = 178
+    Width = 75
+    Height = 25
+    Caption = 'Resposta'
+    TabOrder = 3
+    OnClick = BtnDescritivasClick
+  end
+  object BtnNomes: TButton
+    Left = 8
+    Top = 228
+    Width = 75
+    Height = 25
+    Caption = 'Resposta'
+    TabOrder = 4
+    OnClick = BtnNomesClick
+  end
+  object BtnQ6: TButton
+    Left = 295
+    Top = 46
+    Width = 75
+    Height = 25
+    Caption = 'Resposta'
+    TabOrder = 5
+    OnClick = BtnQ6Click
+  end
+end
