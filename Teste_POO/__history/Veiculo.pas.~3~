@@ -1,0 +1,15 @@
+unit Veiculo;
+
+interface
+uses
+  Windows, SysUtils, Classes, Dialogs;
+
+type
+  TVeiculo = class
+    private
+    public
+      procedure Mover(Veiculo: string); virtual; abstract;
+      procedure Parar(Veiculo: string); virtual; abstract;
+  end;
+implementation
+end.

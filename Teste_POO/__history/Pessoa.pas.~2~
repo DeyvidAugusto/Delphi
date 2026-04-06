@@ -1,0 +1,27 @@
+unit Pessoa;
+
+interface
+uses
+  Windows, SysUtils, Classes, Dialogs;
+
+type
+  TPessoa = class
+  private
+  public
+    function Mover(Sender: TObject);
+    function Parar(Sender: TObject);
+  end;
+
+implementation
+
+function TPessoa.Mover(Sender: TObject);
+begin
+  ShowMessage('Pessoa começou a  andar');
+end;
+
+function TPessoa.Parar(Sender: TObject);
+begin
+  ShowMessage('Pessoa Parou de andar');
+end;
+
+end.

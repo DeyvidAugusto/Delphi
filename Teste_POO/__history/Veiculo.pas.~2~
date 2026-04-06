@@ -1,0 +1,26 @@
+unit Veiculo;
+
+interface
+uses
+  Windows, SysUtils, Classes, Dialogs;
+
+type
+  TVeiculo = class
+  private
+  public
+    function Mover(Veiculo: string; Locomocao: string); virtual; abstract;
+    function Parar(Veiculo: string; Locomocao: string); virtual; abstract;
+  end;
+implementation
+
+function TVeiculo.Mover(Veiculo: string; Locomocao: string): string;
+begin
+  Result := Format('Veiculo começou a se mover');
+end;
+
+function TVeiculo.Parar(Veiculo: string; Locomocao: string);
+begin
+  Result := Format('Veiculo parou de se mover');
+end;
+
+end.

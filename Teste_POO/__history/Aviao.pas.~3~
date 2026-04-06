@@ -1,0 +1,28 @@
+unit Aviao;
+
+interface
+uses
+  Veiculo, SysUtils, Classes, Dialogs;
+
+type
+  TAviao = class(TVeiculo)
+    private
+    public
+      procedure Mover(Veiculo: string); override;
+      procedure Parar(Veiculo: string); override;
+  end;
+
+
+implementation
+
+procedure TAviao.Mover(Veiculo: string);
+begin
+  ShowMessage(Format('%s começou a voar', [Veiculo]));
+end;
+
+procedure TAviao.Parar(Veiculo: string);
+begin
+  ShowMessage(Format('%s parou de voar', [Veiculo]));
+end;
+
+end.

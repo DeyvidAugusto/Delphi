@@ -1,0 +1,27 @@
+unit Barco;
+
+interface
+uses
+  Veiculo, SysUtils, Classes, Dialogs;
+
+type
+  TBarco = class(TVeiculo)
+    private
+    public
+      procedure Mover(Veiculo: string); override;
+      procedure Parar(Veiculo: string); override;
+  end;
+
+
+implementation
+
+procedure TBarco.Mover(Veiculo: string);
+begin
+  ShowMessage(Format('%s começou a navegar', [Veiculo]));
+end;
+
+procedure TBarco.Parar(Veiculo: string);
+begin
+  ShowMessage(Format('%s parou de navegar', [Veiculo]));
+end;
+end.

@@ -1,0 +1,24 @@
+unit Barco;
+
+interface
+uses
+  Veiculo, SysUtils, Classes, Dialogs;
+
+type
+  TBarco = class(TVeiculo)
+    private
+    public
+  end;
+
+
+implementation
+
+function TBarco.Mover(Veiculo: string; Locomocao: string): string;
+begin
+  Result := Format('Barco começou a Navegar');
+end;
+
+function TBarco.Parar(Veiculo: string; Locomocao: string);
+begin
+  Result := Format('Barco parou de Navegar');
+end;

@@ -1,0 +1,26 @@
+unit Aviao;
+
+interface
+uses
+  Veiculo, SysUtils, Classes, Dialogs;
+
+type
+  TAviao = class(TVeiculo)
+    private
+    public
+  end;
+
+
+implementation
+
+function TAviao.Mover(Veiculo: string; Locomocao: string): string;
+begin
+  Result := Format('Barco começou de Voar');
+end;
+
+function TAviao.Parar(Veiculo: string; Locomocao: string);
+begin
+  Result := Format('Avião parou de Voar');
+end;
+
+end.

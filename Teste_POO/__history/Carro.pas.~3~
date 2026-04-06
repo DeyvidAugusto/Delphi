@@ -1,0 +1,29 @@
+unit Carro;
+
+interface
+uses
+  Veiculo, SysUtils, Classes, Dialogs;
+
+type
+  TCarro = class(TVeiculo)
+    private
+
+    public
+      procedure Mover(Veiculo: string); override;
+      procedure Parar(Veiculo: string); override;
+  end;
+
+
+implementation
+
+procedure TCarro.Mover(Veiculo: string);
+begin
+  ShowMessage(Format('%s começou a andar', [Veiculo]));
+end;
+
+procedure TCarro.Parar(Veiculo: string);
+begin
+  ShowMessage(Format('%s Parou de andar', [Veiculo]));
+end;
+
+end.
