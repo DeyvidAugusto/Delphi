@@ -1,0 +1,72 @@
+object Form1: TForm1
+  Left = 0
+  Top = 0
+  Caption = 'Form1'
+  ClientHeight = 281
+  ClientWidth = 505
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Nome: TLabel
+    Left = 16
+    Top = 51
+    Width = 27
+    Height = 13
+    Caption = 'Nome'
+  end
+  object Email: TLabel
+    Left = 16
+    Top = 91
+    Width = 24
+    Height = 13
+    Caption = 'Email'
+  end
+  object CampoNome: TEdit
+    Left = 49
+    Top = 48
+    Width = 121
+    Height = 21
+    TabOrder = 0
+    OnChange = CampoNomeChange
+  end
+  object BtnEnviar: TButton
+    Left = 72
+    Top = 123
+    Width = 75
+    Height = 25
+    Caption = 'Enviar'
+    TabOrder = 1
+    OnClick = BtnEnviarClick
+  end
+  object CampoEmail: TEdit
+    Left = 46
+    Top = 96
+    Width = 121
+    Height = 21
+    TabOrder = 2
+    OnChange = CampoEmailChange
+  end
+  object MemoRegistro: TMemo
+    Left = 272
+    Top = 8
+    Width = 225
+    Height = 245
+    TabOrder = 3
+  end
+  object BtnApagarRegistro: TButton
+    Left = 49
+    Top = 237
+    Width = 121
+    Height = 25
+    Caption = 'Apagar Registro'
+    TabOrder = 4
+    OnClick = Campo
+  end
+end

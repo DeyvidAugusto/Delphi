@@ -1,0 +1,28 @@
+unit Pessoa;
+
+interface
+
+type
+  TPessoa = class
+  ID : integer;
+  Nome : string;
+  Email : string;
+    private
+      LastID : integer;
+    public
+      procedure Insert(N : string; E : string);
+  end;
+
+
+implementation
+
+procedure TPessoa.Insert(N : string; E : string);
+begin
+  LastID := LastID + 1;
+  Self.ID := LastID;
+  Self.Nome := N;
+  Self.Email := E;
+
+end;
+
+end.

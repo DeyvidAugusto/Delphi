@@ -1,0 +1,19 @@
+unit Pessoa;
+
+interface
+
+type
+  TPessoa = class
+  ID : integer;
+  Nome : string;
+  Email : string;
+    private
+    public
+  end;
+
+
+implementation
+
+
+
+end.

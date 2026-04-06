@@ -1,0 +1,123 @@
+unit Observers;
+
+interface
+uses
+   SysUtils, Classes, DateUtils, Contnrs, Forms;
+
+type
+   IObserver = interface
+      ['{7D57097F-F971-41DF-9AD1-DE998F5AA62D}']
+      procedure Atualizar (const AData : string);
+   end;
+
+   ISubject = interface
+      ['{271EB009-8DF7-42DC-A5BD-A9062508C951}']
+      procedure Adicionar (const AObserver : IObserver);
+      procedure Remover (const AObserver : IObserver);
+      procedure Notificar (const AData : string);
+   end;
+
+   TLogObserver = class(TInterfacedObject, IObserver)
+      procedure Atualizar (const AData : string);
+   end;
+
+   TEmailObserver = class(TInterfacedObject, IObserver)
+   private
+      FEmail : string;
+   public
+      constructor Create (const AEmail : string);
+      procedure Atualizar (const AData : string);
+   end;
+   
+   TSystemEmail = class(TInterfacedObject, ISubject)
+   private
+      FObservers: TInterfaceList;
+      FOrderStatus: string;
+      procedure SetStatus(const AStatus: string);
+   public
+      constructor Create;
+      destructor Destroy; override;
+      procedure Adicionar (const AObserver: IObserver);
+      procedure Remover (const AObserver: IObserver);
+      procedure Notificar (const AData: string);
+      property Status: string write SetStatus;
+   end;
+
+implementation
+
+procedure TLogObserver.Atualizar(const AData: string);
+var
+   FilePath: string;
+   LogFile: TextFile;
+begin
+   FilePath := ExtractFilePath(Application.ExeName);
+   AssignFile(LogFile, (FilePath + 'Log.txt'));
+   if FileExists('Log.txt') then
+   begin
+      try
+      Writeln(LogFile, ('[LOG] ' + DateTimeToStr(Now) + ' - ' + AData));
+      finally
+      CloseFile(LogFile);
+      end;
+   end
+   else
+   begin
+      Rewrite(LogFile);
+      try
+      Writeln(LogFile, ('[LOG] ' + DateTimeToStr(Now) + ' - ' + AData));
+      finally
+      CloseFile(LogFile);
+      end;
+   end;
+end;
+
+constructor TEmailObserver.Create (const AEmail: string);
+begin
+   inherited Create;
+   FEmail := AEmail;
+end;
+
+procedure TEmailObserver.Atualizar(const AData: string);
+begin
+   //Writeln('[EMAIL] Enviado Para ' + FEmail + ': ' + AData);
+end;
+
+constructor TSystemEmail.Create;
+begin
+   inherited;
+   FObservers := TInterfaceList.Create;
+end;
+
+destructor TSystemEmail.Destroy;
+begin
+   FObservers.Free;
+   inherited;
+end;
+
+procedure TSystemEmail.Adicionar(const AObserver: IObserver);
+begin
+   if FObservers.IndexOf(AObserver) = -1 then
+      FObservers.add(AObserver);
+   end;
+
+procedure TSystemEmail.remover(const AObserver: IObserver);
+begin
+   FObservers.Remove(AObserver);
+end;
+
+procedure TSystemEmail.Notificar(const AData: string);
+var
+   I: Integer;
+begin
+   for I := 0 to FObservers.Count - 1 do
+      (FObservers[I] as IObserver).Atualizar(AData);
+end;
+
+procedure TSystemEmail.SetStatus(const AStatus: string);
+begin
+   FOrderStatus := AStatus;
+   Notificar('Status: ' + AStatus);
+end;
+
+end.
+

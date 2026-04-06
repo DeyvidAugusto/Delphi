@@ -1,0 +1,18 @@
+[LOG] 30/03/2026 16:09:21 - Mensagem: aaa | Enviada para: aaa@teste.com
+[LOG] 30/03/2026 16:09:31 - Mensagem: bbb | Enviada para: bbb@teste.com
+[LOG] 30/03/2026 16:09:31 - Mensagem: bbb | Enviada para: bbb@teste.com
+[LOG] 30/03/2026 16:09:41 - Mensagem: ccc | Enviada para: ccc@teste.com
+[LOG] 30/03/2026 16:09:41 - Mensagem: ccc | Enviada para: ccc@teste.com
+[LOG] 30/03/2026 16:09:41 - Mensagem: ccc | Enviada para: ccc@teste.com
+[LOG] 30/03/2026 16:10:12 - Mensagem: ddd | Enviada para: ddd@teste.com
+[LOG] 30/03/2026 16:11:24 - Mensagem: rrr | Enviada para: rrr@Teste.com
+[LOG] 30/03/2026 16:19:07 - Mensagem: aaa | Enviada para: aaa
+[LOG] 30/03/2026 16:20:48 - Mensagem: Eu vim fazer um anuncio, shadow o ouriço é um | Enviada para: emailPoggers@B3.com
+[LOG] 30/03/2026 16:21:35 - Mensagem: Sou ruim no termo | Enviada para: Danilo@B3.com
+[LOG] 30/03/2026 16:29:16 - Mensagem: Teste com o programa compilado | Enviada para: teste@progCompilado.com
+[LOG] 30/03/2026 16:29:57 - Mensagem:  | Enviada para: 
+[LOG] 30/03/2026 16:30:34 - Mensagem: aaaaaaaaaaaaaaaaaaaaaaaaaaaa | Enviada para: teste
+[LOG] 31/03/2026 14:02:53 -  | Enviada para: mudando@estruturaLog.com | Mensagem: alterando a estrutura do log
+[LOG] 31/03/2026 14:20:15 -  Enviada para: aaa | Mensagem: aaaa
+[LOG] 31/03/2026 14:32:04 -  Enviada para: 25252525@aaa.com | Mensagem: 00100101101
+[LOG] 31/03/2026 14:35:57 -  Enviada para: hhh | Mensagem: hh

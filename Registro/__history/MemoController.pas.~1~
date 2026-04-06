@@ -1,0 +1,79 @@
+unit MemoController;
+
+interface
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Pessoa, Form;
+
+type
+  TMemoController = class(TForm)
+  public
+    procedure MemoRegistrar(Pessoa : TPessoa);
+    procedure MemoApagar(ID: string);
+    procedure MemoUpdate(ID: string);
+    procedure SalvarMemoToLista();
+
+  end;
+
+implementation
+
+procedure TMemoController.MemoRegistrar(Pessoa : TPessoa);
+begin
+  Form1.MemoRegistro.Lines.Add('ID: '+IntToStr(Pessoa.ID));
+  Form1.MemoRegistro.Lines.Add('Nome: '+Pessoa.Nome);
+  Form1.MemoRegistro.Lines.Add('Email: '+Pessoa.Email);
+  Form1.MemoRegistro.Lines.Add('---------------------------')
+end;
+
+procedure TMemoController.MemoApagar(ID: string);
+var
+  I : integer;
+begin
+  for I := Form1.MemoRegistro.Lines.Count - 1 downto 0 do
+  begin
+    if Pos(ID, Form1.MemoRegistro.Lines[I]) > 0 then
+    begin
+      Form1.MemoRegistro.Lines.Delete(I);
+      Form1.MemoRegistro.Lines.Delete(I);
+      Form1.MemoRegistro.Lines.Delete(I);
+      Form1.MemoRegistro.Lines.Delete(I);
+    end;
+  end;
+end;
+
+procedure TMemoController.MemoUpdate(ID: string);
+var
+  I: integer;
+begin
+  for I := Form1.MemoRegistro.Lines.Count - 1 downto 0 do
+  begin
+    if Pos(ID, Form1.MemoRegistro.Lines[I]) > 0 then
+    begin
+      Form1.MemoRegistro.Lines[I+1] := 'Nome: '+InputBox('Digite o novo nome','Nome','');
+      Form1.MemoRegistro.Lines[I+2] := 'Email: '+InputBox('Digite o novo email','Email','');
+    end;
+  end;
+end;
+
+procedure TMemoController.SalvarMemoToLista();
+var
+  I: Integer;
+  FilePath : string;
+  ListaRegistros: TStringList;
+begin
+  ListaRegistros := TStringList.Create;
+  try
+    FilePath := ExtractFilePath(Application.ExeName);
+    for I := 0 to Form1.MemoRegistro.Lines.Count - 1 do
+    begin
+      ListaRegistros.add(Form1.MemoRegistro.Lines[I]);
+    end;
+    ListaRegistros.SaveToFile(FilePath + 'Registros.txt');
+    ShowMessage('Registro Salvo em ' + FilePath);
+  finally
+    ListaRegistros.Free;
+  end;
+end;
+
+
+end.

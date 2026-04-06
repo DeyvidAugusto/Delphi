@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2026/03/18 14:54:23.718.pas,C:\Users\pjr006\Documents\RAD Studio\Projects\Unit1.pas=C:\Users\pjr006\Documents\RAD Studio\Projects\InteiroParaRomano.pas</Transaction>
+    <Transaction>2026/03/18 14:54:23.721.dfm,C:\Users\pjr006\Documents\RAD Studio\Projects\Unit1.dfm=C:\Users\pjr006\Documents\RAD Studio\Projects\InteiroParaRomano.dfm</Transaction>
+    <Transaction>2026/03/18 14:54:34.608.dproj,C:\Users\pjr006\Documents\RAD Studio\Projects\Project1.dproj=C:\Users\pjr006\Documents\RAD Studio\Projects\ProjectInteiroParaRomano.dproj</Transaction>
+  </Transactions>
+</BorlandProject>

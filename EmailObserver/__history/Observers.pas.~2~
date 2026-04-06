@@ -1,0 +1,102 @@
+unit Observers;
+
+interface
+uses
+   SysUtils, Classes, DateUtils, Contnrs;
+
+type
+   IObserver = interface
+      ['{7D57097F-F971-41DF-9AD1-DE998F5AA62D}']
+      procedure Atualizar (const AData : string);
+   end;
+
+   ISubject = interface
+      ['{271EB009-8DF7-42DC-A5BD-A9062508C951}']
+      procedure Adicionar (const AObserver : IObserver);
+      procedure Remover (const AObserver : IObserver);
+      procedure Notificar (const AData : string);
+   end;
+
+   TLogObserver = class(TInterfacedObject, IObserver)
+      procedure Atualizar (const AData : string);
+   end;
+
+   TEmailObserver = class(TInterfacedObject, IObserver)
+   private
+      FEmail : string;
+   public
+      constructor Create (const AEmail : string);
+      procedure Atualizar (const AData : string);
+   end;
+   
+   TSystem = class(TInterfacedObject, ISubject)
+   private
+      FObservers: TInterfaceList;
+      FOrderStatus: string;
+      procedure SetOrderStatus(const AStatus: string);
+   public
+      constructor Create;
+      destructor Destroy; override;
+      procedure Adicionar (const AObserver: IObserver);
+      procedure Remover (const AObserver: IObserver);
+      procedure Notificar (const AData: string);
+      property OrderStatus: string write SetOrderStatus;
+   end;
+
+implementation
+
+procedure TLogObserver.Atualizar(const AData: string);
+begin
+   Writeln('[LOG] ' + DateTimeToStr(Now) + ' - ' + AData);
+end;
+
+constructor TEmailObserver.Create (const AEmail: string);
+begin
+   inherited Create;
+   FEmail := AEmail;
+end;
+
+procedure TEmailObserver.Atualizar(const AData: string);
+begin
+   Writeln('[EMAIL] Enviado Para ' + FEmail + ': ' + AData);
+end;
+
+constructor TSystem.Create;
+begin
+   inherited;
+   FObservers := TInterfaceList.Create;
+end;
+
+destructor TSystem.Destroy;
+begin
+   FObservers.Free;
+   inherited;
+end;
+
+procedure TSystem.Adicionar(const AObserver: IObserver);
+begin
+   if FObservers.IndexOf(AObserver) = -1 then
+      FObservers.add(AObserver);
+   end;
+
+procedure TSystem.remover(const AObserver: IObserver);
+begin
+   FObservers.Remove(AObserver);
+end;
+
+procedure TSystem.Notificar(const AData: string);
+var
+   I: Integer;
+begin
+   for I := 0 to FObservers.Count - 1 do
+      (FObservers[I] as IObserver).Atualizar(AData);
+end;
+
+procedure TSystem.SetOrderStatus(const AStatus: string);
+begin
+   FOrderStatus := AStatus;
+   Notificar('Pedido Atualizado: ' + AStatus);
+end;
+
+end.
+
