@@ -11,9 +11,7 @@ object Form1: TForm1
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   OnCreate = FormCreate
-  PixelsPerInch = 96
   TextHeight = 13
   object GridUsuarios: TDBGrid
     Left = 10
@@ -475,12 +473,12 @@ object Form1: TForm1
     end
   end
   object DataSourceDb: TDataSource
-    Left = 472
-    Top = 32
+    Left = 520
+    Top = 88
   end
   object SQLConnectionDb: TSQLConnection
-    Left = 568
-    Top = 32
+    Left = 520
+    Top = 144
   end
   object SimpleDataSetDb: TSimpleDataSet
     Aggregates = <>

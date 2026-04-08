@@ -22,6 +22,8 @@ type
     procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
+    procedure ConectarBanco;
+    procedure CarregarUsuarios;
   public
     { Public declarations }
   end;
@@ -34,29 +36,43 @@ implementation
 {$R *.dfm}
 
 procedure TForm1.FormCreate(Sender: TObject);
-var
-   FILEPATH : string;
 begin
-   FILEPATH := ExtractFilePath(Application.ExeName);
-
-   SQLConnectionDb.ConnectionName := 'FBConnection';
-   SQLConnectionDb.DriverName := 'Firebird';
-   SQLConnectionDb.GetDriverFunc := 'getSQLDriverINTERBASE';
-   SQLConnectionDb.LibraryName := 'dbxfb.dll';
-   SQLConnectionDb.VendorLib := 'fbclient.dll';
-   
-   SQLConnectionDb.Params.Clear;
-   SQLConnectionDb.Params.Values['Database'] := FILEPATH + 'Database\SISTEMA.FDB';
-   SQLConnectionDb.Params.Values['User_Name'] := 'SYSDBA';
-   SQLConnectionDb.Params.Values['Password'] := 'masterkey';
-   SQLConnectionDb.LoginPrompt := False;
-   SQLConnectionDb.Connected := True;
-
-   SimpleDataSetDb.Connection := SQLConnectionDb;
-   SimpleDataSetDb.DataSet.CommandText := 'SELECT * FROM USUARIOS';
-   SimpleDataSetDb.Active := True;
-
-
+  ConectarBanco;
+  CarregarUsuarios;
 end;
 
+procedure TForm1.ConectarBanco;
+var
+  FILEPATH: string;
+begin
+  FILEPATH := ExtractFilePath(Application.ExeName);
+
+  SQLConnectionDb.ConnectionName := 'IBConnection';
+  SQLConnectionDb.DriverName     := 'Interbase';
+  SQLConnectionDb.GetDriverFunc  := 'getSQLDriverINTERBASE';
+  SQLConnectionDb.LibraryName    := 'dbxint.dll';
+  SQLConnectionDb.VendorLib      := 'fbclient.dll';
+
+  SQLConnectionDb.Params.Clear;
+  SQLConnectionDb.Params.Values['Database']  := FILEPATH + 'Database\SISTEMA.FDB';
+  SQLConnectionDb.Params.Values['User_Name'] := 'SYSDBA';
+  SQLConnectionDb.Params.Values['Password']  := 'masterkey';
+  SQLConnectionDb.Params.Values['BlobSize']  := '-1';
+
+  SQLConnectionDb.LoginPrompt := False;
+  SQLConnectionDb.Connected   := True;
+end;
+
+procedure TForm1.CarregarUsuarios;
+begin
+  SimpleDataSetDb.Active := False;
+  SimpleDataSetDb.Connection          := SQLConnectionDb;
+  SimpleDataSetDb.DataSet.CommandType := ctQuery;
+  SimpleDataSetDb.DataSet.CommandText := 'SELECT * FROM USUARIOS';
+  SimpleDataSetDb.PacketRecords       := -1;
+  SimpleDataSetDb.Active              := True;
+
+  DataSourceDb.DataSet    := SimpleDataSetDb;
+  GridUsuarios.DataSource := DataSourceDb;
+end;
 end.
