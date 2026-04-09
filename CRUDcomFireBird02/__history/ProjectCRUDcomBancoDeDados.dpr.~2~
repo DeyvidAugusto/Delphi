@@ -1,0 +1,17 @@
+program ProjectCRUDcomBancoDeDados;
+
+uses
+  Forms,
+  uMainForm in 'Fontes\View\uMainForm.pas' {Form1},
+  uConexao in 'Fontes\Infra\uConexao.pas',
+  uMainFormController in 'Fontes\Controller\uMainFormController.pas',
+  uUsuarioDAO in 'Fontes\DAO\uUsuarioDAO.pas';
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TForm1, Form1);
+  Application.Run;
+end.

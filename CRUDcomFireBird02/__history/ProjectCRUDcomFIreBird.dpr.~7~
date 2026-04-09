@@ -1,0 +1,15 @@
+program ProjectCRUDcomFIreBird;
+
+uses
+  Forms,
+  uMainForm in 'Fontes\View\uMainForm.pas' {Form1},
+  uCadastroForm in 'Fontes\View\uCadastroForm.pas' {$R *.res};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TForm1, Form1);
+  Application.Run;
+end.

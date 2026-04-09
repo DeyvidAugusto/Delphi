@@ -1,0 +1,127 @@
+unit uCadastroForm;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, Mask, StdCtrls, ExtCtrls, SqlExpr, uCadastroController;
+
+type
+  TForm2 = class(TForm)
+    EdtID: TEdit;
+    Label1: TLabel;
+    LbNome: TLabel;
+    EdtNome: TEdit;
+    LbCPF: TLabel;
+    LbTelefone: TLabel;
+    LbNascimento: TLabel;
+    Label2: TLabel;
+    CbEstadoCivil: TComboBox;
+    EdtEndereco: TEdit;
+    LbEndereco: TLabel;
+    BntIncluir: TButton;
+    BntCancelar: TButton;
+    MEdtCPF: TMaskEdit;
+    MEdtTelefone: TMaskEdit;
+    MEdtNascimento: TMaskEdit;
+    Panel1: TPanel;
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure EdtIDKeyPress(Sender: TObject; var Key: Char);
+    procedure BntIncluirClick(Sender: TObject);
+    procedure BntCancelarClick(Sender: TObject);
+  private
+    FController: TCadastroController;
+    procedure HabilitarCampos(AHabilitar: Boolean);
+    procedure ValidarID;
+  public
+    procedure Inicializar(AConn: TSQLConnection);
+  end;
+
+var
+  Form2: TForm2;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm2.Inicializar(AConn: TSQLConnection);
+begin
+  FController := TCadastroController.Create(AConn);
+  EdtID.Text := IntToStr(FController.ProximoID);
+  HabilitarCampos(False);
+end;
+
+procedure TForm2.FormCreate(Sender: TObject);
+begin
+  HabilitarCampos(False);
+end;
+
+procedure TForm2.FormDestroy(Sender: TObject);
+begin
+  FController.Free;
+end;
+
+procedure TForm2.HabilitarCampos(AHabilitar: Boolean);
+begin
+  EdtNome.Enabled       := AHabilitar;
+  EdtEndereco.Enabled   := AHabilitar;
+  MEdtCPF.Enabled       := AHabilitar;
+  MEdtNascimento.Enabled := AHabilitar;
+  MEdtTelefone.Enabled  := AHabilitar;
+  CbEstadoCivil.Enabled := AHabilitar;
+  BntIncluir.Enabled    := AHabilitar;
+end;
+
+procedure TForm2.ValidarID;
+var
+  ID  : Integer;
+  Msg : string;
+begin
+  try
+    ID := StrToInt(EdtID.Text);
+    if FController.ValidarID(ID, Msg) then
+    begin
+      EdtID.Enabled := False;
+      HabilitarCampos(True);
+    end
+    else
+      ShowMessage(Msg);
+  except
+    on E: Exception do
+      ShowMessage('ID inválido: ' + E.Message);
+  end;
+end;
+
+procedure TForm2.EdtIDKeyPress(Sender: TObject; var Key: Char);
+begin
+  if Key = #13 then
+    ValidarID;
+end;
+
+procedure TForm2.BntIncluirClick(Sender: TObject);
+begin
+  try
+    FController.Salvar(
+      StrToInt(EdtID.Text),
+      EdtNome.Text,
+      MEdtCPF.Text,
+      MEdtTelefone.Text,
+      MEdtNascimento.Text,
+      CbEstadoCivil.Text,
+      EdtEndereco.Text
+    );
+    ShowMessage('Cadastro realizado com sucesso!');
+    Close;
+  except
+    on E: Exception do
+      ShowMessage('Erro ao salvar: ' + E.Message);
+  end;
+end;
+
+procedure TForm2.BntCancelarClick(Sender: TObject);
+begin
+  Close;
+end;
+
+end.

@@ -1,0 +1,78 @@
+unit uMainForm;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Dialogs, Buttons, Grids, DBGrids, ExtCtrls, DB, SqlExpr,
+  uMainFormController, WideStrings, DBClient, SimpleDS, Provider;
+
+type
+  TForm1 = class(TForm)
+    GridUsuarios: TDBGrid;
+    SpBntInserir: TSpeedButton;
+    SpBntAlterar: TSpeedButton;
+    SpBntDeletar: TSpeedButton;
+    SpBntFiltrar: TSpeedButton;
+    SpBntSair: TSpeedButton;
+    Panel1: TPanel;
+    DataSourceDb: TDataSource;
+    SQLConnectionDb: TSQLConnection;
+    SimpleDataSetDb: TSimpleDataSet;
+    DataSetProvider1: TDataSetProvider;
+    ClientDataSet1: TClientDataSet;
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure SpBntSairClick(Sender: TObject);
+  private
+    FController: TMainController;
+    procedure CarregarGrid;
+  public
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  FController := TMainController.Create;
+  try
+    FController.Conectar;
+    CarregarGrid;
+  except
+    on E: Exception do
+      ShowMessage('Erro ao conectar: ' + E.Message);
+  end;
+end;
+
+procedure TForm1.FormDestroy(Sender: TObject);
+begin
+  FController.Free;
+end;
+
+procedure TForm1.CarregarGrid;
+var
+   Q: TSQLQuery;
+begin
+   Q := FController.CarregarUsuarios;
+
+   DataSetProvider1.DataSet := Q;
+   ClientDataSet1.ProviderName := 'DataSetProvider1';
+
+   ClientDataSet1.Open;
+
+   DataSourceDb.DataSet := ClientDataSet1; 
+   GridUsuarios.DataSource := DataSourceDb;
+end;
+end;
+
+procedure TForm1.SpBntSairClick(Sender: TObject);
+begin
+  Close;
+end;
+
+end.

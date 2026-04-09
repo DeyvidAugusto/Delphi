@@ -1,0 +1,16 @@
+unit uCadastroController;
+
+interface
+
+uses uUsuarioDAO, SqlExpr, SysUtils;
+
+type
+  TCadastroController = class
+  private
+  public
+  end;
+
+implementation
+
+
+end.
