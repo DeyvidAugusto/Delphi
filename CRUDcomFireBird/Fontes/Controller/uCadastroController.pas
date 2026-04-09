@@ -1,0 +1,65 @@
+unit uCadastroController;
+
+interface
+
+uses uUsuarioDAO, SqlExpr, SysUtils;
+
+type
+  TCadastroController = class
+  private
+    FDAO: TUsuarioDAO;
+  public
+    constructor Create(AConn: TSQLConnection);
+    destructor Destroy; override;
+    function ProximoID: Integer;
+    function ValidarID(AID: Integer; out Mensagem: string): Boolean;
+    procedure Salvar(ID: Integer; Nome, CPF, Telefone,
+                     Nascimento, EstadoCivil, Endereco: string);
+  end;
+
+implementation
+
+constructor TCadastroController.Create(AConn: TSQLConnection);
+begin
+  FDAO := TUsuarioDAO.Create(AConn);
+end;
+
+destructor TCadastroController.Destroy;
+begin
+  FDAO.Free;
+  inherited;
+end;
+
+function TCadastroController.ProximoID: Integer;
+begin
+  Result := FDAO.ProximoID;
+end;
+
+function TCadastroController.ValidarID(AID: Integer; out Mensagem: string): Boolean;
+begin
+  Result := False;
+  if AID <= 0 then
+  begin
+    Mensagem := 'ID deve ser maior que zero.';
+    Exit;
+  end;
+  if not FDAO.IDDisponivel(AID) then
+  begin
+    Mensagem := 'ID já cadastrado. Digite um ID válido.';
+    Exit;
+  end;
+  Result := True;
+end;
+
+procedure TCadastroController.Salvar(ID: Integer; Nome, CPF, Telefone,
+                                      Nascimento, EstadoCivil, Endereco: string);
+begin
+  if Trim(Nome) = '' then
+    raise Exception.Create('Nome é obrigatório.');
+  if Trim(CPF) = '' then
+    raise Exception.Create('CPF é obrigatório.');
+
+  FDAO.Inserir(ID, Nome, CPF, Telefone, Nascimento, EstadoCivil, Endereco);
+end;
+
+end.

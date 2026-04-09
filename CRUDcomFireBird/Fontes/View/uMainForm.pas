@@ -1,0 +1,102 @@
+unit uMainForm;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Dialogs, Buttons, Grids, DBGrids, ExtCtrls, DB, SqlExpr,
+  uMainController;
+
+type
+  TForm1 = class(TForm)
+    GridUsuarios: TDBGrid;
+    SpBntInserir: TSpeedButton;
+    SpBntAlterar: TSpeedButton;
+    SpBntDeletar: TSpeedButton;
+    SpBntFiltrar: TSpeedButton;
+    SpBntSair: TSpeedButton;
+    Panel1: TPanel;
+    DataSourceDb: TDataSource;
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure SpBntInserirClick(Sender: TObject);
+    procedure SpBntDeletarClick(Sender: TObject);
+    procedure SpBntSairClick(Sender: TObject);
+  private
+    FController: TMainController;
+    procedure CarregarGrid;
+  public
+    property Connection: TSQLConnection read FController.Connection;
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+uses uCadastroForm;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  FController := TMainController.Create;
+  try
+    FController.Conectar;
+    CarregarGrid;
+  except
+    on E: Exception do
+      ShowMessage('Erro ao conectar: ' + E.Message);
+  end;
+end;
+
+procedure TForm1.FormDestroy(Sender: TObject);
+begin
+  FController.Free;
+end;
+
+procedure TForm1.CarregarGrid;
+var Q: TSQLQuery;
+begin
+  Q := FController.CarregarUsuarios;
+  DataSourceDb.DataSet := Q;
+  GridUsuarios.DataSource := DataSourceDb;
+end;
+
+procedure TForm1.SpBntInserirClick(Sender: TObject);
+var Frm: TForm2;
+begin
+  Frm := TForm2.Create(Self);
+  try
+    Frm.Inicializar(FController.Connection);
+    if Frm.ShowModal = mrOk then
+      CarregarGrid;  // Atualiza grid após inserção
+  finally
+    Frm.Free;
+  end;
+end;
+
+procedure TForm1.SpBntDeletarClick(Sender: TObject);
+var ID: Integer;
+begin
+  if DataSourceDb.DataSet = nil then Exit;
+  ID := DataSourceDb.DataSet.FieldByName('ID').AsInteger;
+  if MessageDlg('Deseja deletar o usuário ID ' + IntToStr(ID) + '?',
+                mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+  begin
+    try
+      FController.DeletarUsuario(ID);
+      CarregarGrid;
+    except
+      on E: Exception do
+        ShowMessage('Erro ao deletar: ' + E.Message);
+    end;
+  end;
+end;
+
+procedure TForm1.SpBntSairClick(Sender: TObject);
+begin
+  Close;
+end;
+
+end.
