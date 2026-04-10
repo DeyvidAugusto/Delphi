@@ -1,0 +1,132 @@
+unit uUsuarioDAO;
+
+interface
+
+uses SqlExpr, DB, SimpleDS, SysUtils;
+
+type
+   TUsuarioDAO = class
+      private
+         FConn : TSQLConnection;
+         function NovaQuery : TSQLQuery;
+      public
+         constructor Create(AConn : TSQLConnection);
+         function ProximoID: Integer;
+         function isIDDisponivel(AID: integer): boolean;
+         function CarregarUsuarios: TSQLQuery;
+         procedure Deletar(AID: Integer);
+         procedure Inserir(ID: Integer; Nome, CPF, Telefone, Nascimento, EstadoCivil, Endereco: string);
+         procedure Atualizar(ID: Integer; Nome, CPF, Telefone, Nascimento, EstadoCivil, Endereco: string);
+   end;
+
+implementation
+
+constructor TUsuarioDAO.Create(AConn : TSQLConnection);
+begin
+   FConn := AConn;
+end;
+
+function TUsuarioDAO.NovaQuery: TSQLQuery;
+begin
+  Result := TSQLQuery.Create(nil);
+  Result.SQLConnection := FConn;
+end;
+
+function TUsuarioDAO.ProximoID: integer;
+var
+   Q: TSQLQuery;
+begin
+   Q := NovaQuery;
+   try
+      Q.SQL.Text := 'SELECT MAX(ID) AS ultimo_id FROM USUARIOS';
+      Q.Open;
+      Result := Q.FieldByName('ultimo_id').AsInteger + 1;
+   finally
+      Q.Free;
+   end;
+end;
+
+function TUsuarioDAO.isIDDisponivel(AID: Integer): boolean;
+var
+   Q : TSQLQuery;
+begin
+   Q := NovaQuery;
+   try
+      Q.SQL.Text := 'SELECT 1 FROM USUARIOS WHERE ID = :id';
+      Q.ParamByName('id').AsInteger := AID;
+      Q.Open;
+      Result := Q.IsEmpty
+   finally
+      Q.Free;
+   end;
+end;
+
+function TUsuarioDAO.CarregarUsuarios: TSQLQuery;
+begin
+   Result := NovaQuery;
+   Result.SQL.Text := 'SELECT * FROM USUARIOS';
+   Result.Open;
+
+end;
+
+procedure TUsuarioDAO.Deletar(AID: Integer);
+var
+  Q: TSQLQuery;
+begin
+  Q := NovaQuery;
+  try
+    Q.SQL.Text := 'DELETE FROM USUARIOS WHERE ID = :id';
+    Q.ParamByName('id').AsInteger := AID;
+    Q.ExecSQL;
+  finally
+    Q.Free;
+  end;
+end;
+
+procedure TUsuarioDAO.Inserir(ID: Integer; Nome, CPF, Telefone,
+  EstadoCivil, Endereco: string; Nascimento: TDateTime);
+var
+   Q: TSQLQuery;
+begin
+   Q:= NovaQuery;
+   try
+      Q.SQL.Text := 'INSERT INTO USUARIOS ' +
+      '(ID, NOME, CPF, TELEFONE, DATANASCIMENTO, ESTADOCIVIL, ENDERECO) ' +
+      'VALUES (:id, :nome, :cpf, :tel, :nasc, :ec, :end)';
+      Q.ParamByName('id').AsInteger  := ID;
+      Q.ParamByName('nome').AsString := Nome;
+      Q.ParamByName('cpf').AsString  := CPF;
+      Q.ParamByName('tel').AsString  := Telefone;
+      Q.ParamByName('nasc').AsDate := Nascimento;
+      Q.ParamByName('ec').AsString   := EstadoCivil;
+      Q.ParamByName('end').AsString  := Endereco;
+      Q.ExecSQL;
+   finally
+      Q.Free;
+   end;
+end;
+
+procedure TUsuarioDAO.Atualizar(ID: Integer; Nome, CPF, Telefone, Nascimento, EstadoCivil, Endereco: string);
+var
+  Q: TSQLQuery;
+begin
+  Q := NovaQuery;
+  try
+    Q.SQL.Text :=
+      'UPDATE USUARIOS SET ' +
+      'NOME = :nome, CPF = :cpf, TELEFONE = :tel, ' +
+      'NASCIMENTO = :nasc, ESTADO_CIVIL = :ec, ENDERECO = :end ' +
+      'WHERE ID = :id';
+    Q.ParamByName('nome').AsString := Nome;
+    Q.ParamByName('cpf').AsString  := CPF;
+    Q.ParamByName('tel').AsString  := Telefone;
+    Q.ParamByName('nasc').AsString := Nascimento;
+    Q.ParamByName('ec').AsString   := EstadoCivil;
+    Q.ParamByName('end').AsString  := Endereco;
+    Q.ParamByName('id').AsInteger  := ID;
+    Q.ExecSQL;
+  finally
+    Q.Free;
+  end;
+end;
+end.

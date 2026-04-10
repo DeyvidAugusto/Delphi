@@ -1,0 +1,22 @@
+unit uCadastroController;
+
+interface
+
+uses uUsuarioDAO, SqlExpr, SysUtils;
+
+type
+  TCadastroController = class
+  private
+    FDAO: TUsuarioDAO;
+  public
+    constructor Create(AConn: TSQLConnection);
+    destructor Destroy; override;
+    function ProximoID: Integer;
+    function ValidarID(AID: Integer; out Mensagem: string): Boolean;
+    procedure Salvar(ID: Integer; Nome, CPF, Telefone, Nascimento, EstadoCivil, Endereco: string);
+  end;
+
+implementation
+
+
+end.
