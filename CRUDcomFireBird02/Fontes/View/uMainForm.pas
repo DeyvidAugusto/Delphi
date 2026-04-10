@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, Buttons, Grids, DBGrids, ExtCtrls, DB, SqlExpr,
-  uMainFormController, WideStrings, DBClient, SimpleDS, Provider;
+  uMainFormController, WideStrings, DBClient, SimpleDS, Provider, FireDAC.Comp.Client;
 
 type
   TForm1 = class(TForm)
@@ -25,6 +25,7 @@ type
     procedure SpBntSairClick(Sender: TObject);
     procedure SpBntInserirClick(Sender: TObject);
     procedure SpBntDeletarClick(Sender: TObject);
+    procedure SpBntAlterarClick(Sender: TObject);
   private
     FController: TMainController;
     procedure CarregarGrid;
@@ -46,6 +47,7 @@ begin
   try
     FController.Conectar;
     CarregarGrid;
+    Position := poScreenCenter;
   except
     on E: Exception do
       ShowMessage('Erro ao conectar: ' + E.Message);
@@ -59,7 +61,7 @@ end;
 
 procedure TForm1.CarregarGrid;
 var
-   Q: TSQLQuery;
+   Q: TFDQuery;
 begin
    Q := FController.CarregarUsuarios;
 
@@ -99,6 +101,37 @@ begin
       on E: Exception do
         ShowMessage('Erro ao deletar: ' + E.Message);
     end;
+  end;
+end;
+
+procedure TForm1.SpBntAlterarClick(Sender: TObject);
+var
+  Frm : TForm2;
+  DS  : TDataSet;
+begin
+  DS := DataSourceDb.DataSet;
+  if (DS = nil) or not DS.Active or DS.IsEmpty then
+  begin
+    ShowMessage('Selecione um usuário para alterar.');
+    Exit;
+  end;
+
+  Frm := TForm2.Create(Self);
+  try
+    Frm.InicializarAlterar(
+      FController.Connection,
+      DS.FieldByName('ID').AsInteger,
+      DS.FieldByName('NOME').AsString,
+      DS.FieldByName('CPF').AsString,
+      DS.FieldByName('TELEFONE').AsString,
+      DS.FieldByName('NASCIMENTO').AsString,
+      DS.FieldByName('ESTADO_CIVIL').AsString,
+      DS.FieldByName('ENDERECO').AsString
+    );
+    if Frm.ShowModal = mrOk then
+      CarregarGrid;
+  finally
+    Frm.Free;
   end;
 end;
 

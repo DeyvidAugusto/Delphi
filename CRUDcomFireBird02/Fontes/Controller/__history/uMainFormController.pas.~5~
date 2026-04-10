@@ -1,0 +1,46 @@
+unit uMainFormController;
+
+interface
+
+uses uConexao, uUsuarioDAO, SqlExpr, SysUtils, SimpleDS;
+
+
+type
+  TMainController = class
+  private
+    FConexao : TConexao;
+    FDAO     : TUsuarioDAO;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Conectar;
+    function CarregarUsuarios: TSQLQuery;
+    procedure DeletarUsuario(AID: Integer);
+  end;
+
+implementation
+
+constructor TMainController.Create;
+begin
+   FConexao := TConexao.Create;
+end;
+
+destructor TMainController.Destroy;
+begin
+  FDAO.Free;
+  FConexao.Free;
+  inherited;
+end;
+
+procedure TMainController.Conectar;
+begin
+   FConexao.Conectar;
+   FDAO := TUsuarioDAO.Create(FConexao.Connection);
+end;
+
+function TMainController.CarregarUsuarios: TSQLQuery;
+begin
+   Result := FDAO.CarregarUsuarios;
+end;
+
+end.

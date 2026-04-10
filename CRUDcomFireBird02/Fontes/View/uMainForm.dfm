@@ -11,10 +11,8 @@ object Form1: TForm1
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  PixelsPerInch = 96
   TextHeight = 13
   object GridUsuarios: TDBGrid
     Left = 10
@@ -119,6 +117,7 @@ object Form1: TForm1
         0000000000000000000000000000000000000000000000000000000000000000
         000000000000}
       Layout = blGlyphTop
+      OnClick = SpBntAlterarClick
       ExplicitLeft = 135
       ExplicitTop = 0
       ExplicitHeight = 70
@@ -207,6 +206,7 @@ object Form1: TForm1
         F2B63443F36B3740F61C00000000000000000000000000000000000000000000
         000000000000}
       Layout = blGlyphTop
+      OnClick = SpBntDeletarClick
       ExplicitLeft = 237
       ExplicitTop = -1
       ExplicitHeight = 68
@@ -471,9 +471,7 @@ object Form1: TForm1
         000000000000}
       Layout = blGlyphTop
       OnClick = SpBntSairClick
-      ExplicitLeft = 509
-      ExplicitTop = -8
-      ExplicitHeight = 70
+      ExplicitTop = -23
     end
   end
   object DataSourceDb: TDataSource

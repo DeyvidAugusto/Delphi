@@ -11,8 +11,6 @@ object Form2: TForm2
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
-  PixelsPerInch = 96
   TextHeight = 13
   object GroupBox1: TGroupBox
     Left = 8
@@ -75,7 +73,6 @@ object Form2: TForm2
       Width = 113
       Height = 21
       Enabled = False
-      ItemHeight = 13
       TabOrder = 0
     end
     object EdtEndereco: TEdit
@@ -92,6 +89,7 @@ object Form2: TForm2
       Width = 81
       Height = 21
       TabOrder = 2
+      OnKeyPress = EdtIDKeyPress
     end
     object EdtNome: TEdit
       Left = 16
@@ -104,13 +102,13 @@ object Form2: TForm2
     object MEdtCPF: TMaskEdit
       Left = 288
       Top = 131
-      Width = 104
+      Width = 102
       Height = 21
       Enabled = False
-      EditMask = '000\.000\.00\-00;1;_'
-      MaxLength = 13
+      EditMask = '000\.000\.000\-00;1;_'
+      MaxLength = 14
       TabOrder = 4
-      Text = '   .   .  -  '
+      Text = '   .   .   -  '
     end
     object MEdtNascimento: TMaskEdit
       Left = 16
@@ -142,6 +140,7 @@ object Form2: TForm2
     Height = 25
     Caption = 'Cancelar'
     TabOrder = 1
+    OnClick = BntCancelarClick
   end
   object BntIncluir: TButton
     Left = 349
