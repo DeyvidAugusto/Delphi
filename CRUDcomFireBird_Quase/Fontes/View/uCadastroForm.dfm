@@ -11,10 +11,8 @@ object Form2: TForm2
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   OnClose = FormClose
   OnCreate = FormCreate
-  PixelsPerInch = 96
   TextHeight = 13
   object GroupBox1: TGroupBox
     Left = 8
@@ -77,7 +75,6 @@ object Form2: TForm2
       Width = 113
       Height = 21
       Enabled = False
-      ItemHeight = 13
       TabOrder = 0
       OnExit = EdtOnExit
       Items.Strings = (

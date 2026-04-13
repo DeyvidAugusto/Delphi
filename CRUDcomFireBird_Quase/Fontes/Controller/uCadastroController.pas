@@ -15,6 +15,7 @@ type
     function ValidarID(AID: Integer; out Mensagem: string): Boolean;
     procedure Salvar(ID: Integer; Nome, CPF, Telefone, Nascimento, EstadoCivil, Endereco: string);
     procedure Alterar(ID: Integer; Nome, CPF, Telefone, Nascimento, EstadoCivil, Endereco: string);
+    procedure Deletar(AID: Integer);
   end;
 
 implementation
@@ -68,6 +69,12 @@ begin
   FDAO.Atualizar(ID, Nome, CPF, Telefone, Nascimento, EstadoCivil, Endereco);
 end;
 
+procedure TCadastroController.Deletar(AID: Integer);
+begin
+  if AID <= 0 then
+    raise Exception.Create('ID inválido para exclusão.');
 
+  FDAO.Deletar(AID);
+end;
 
 end.

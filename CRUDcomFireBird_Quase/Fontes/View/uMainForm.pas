@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, Buttons, Grids, DBGrids, ExtCtrls, DB, SqlExpr,
-  uMainFormController, WideStrings, DBClient, SimpleDS, Provider;
+  uMainFormController, WideStrings, DBClient, SimpleDS, Provider, Vcl.StdCtrls;
 
 type
   TForm1 = class(TForm)
@@ -27,10 +27,13 @@ type
     ClientDataSet1DataNascimento: TDateField;
     ClientDataSet1Endereco: TStringField;
     ClientDataSet1EstadoCivil: TStringField;
+    Label1: TLabel;
+    GroupBox1: TGroupBox;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure SpBntSairClick(Sender: TObject);
     procedure SpBntInserirClick(Sender: TObject);
+    procedure SpBntAlterarClick(Sender: TObject);
     procedure SpBntDeletarClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
   private
@@ -75,6 +78,7 @@ end;
 procedure TForm1.CarregarGrid;
 var
    Q: TSQLQuery;
+   Total: integer;
 begin
    Q := FController.CarregarUsuarios;
 
@@ -86,6 +90,12 @@ begin
 
    DataSourceDb.DataSet := ClientDataSet1;
    GridUsuarios.DataSource := DataSourceDb;
+
+   Total := ClientDataSet1.RecordCount;
+   if Total = 1 then
+     Label1.Caption := '1 registro encontrado'
+   else
+     Label1.Caption := IntToStr(Total) + ' registros encontrados';
 end;
 
 procedure TForm1.SpBntInserirClick(Sender: TObject);
@@ -102,21 +112,76 @@ begin
    end;
 end;
 
-procedure TForm1.SpBntDeletarClick(Sender: TObject);
-var ID: Integer;
+procedure TForm1.SpBntAlterarClick(Sender: TObject);
+var
+  Frm: TForm2;
+  DS: TDataSet;
+  DataNasc: string;
 begin
-  if DataSourceDb.DataSet = nil then Exit;
-
-  ID := DataSourceDb.DataSet.FieldByName('ID').AsInteger;
-  if MessageDlg('Deseja deletar o usuário ID ' + IntToStr(ID) + '?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+  if (DataSourceDb.DataSet = nil) or DataSourceDb.DataSet.IsEmpty then
   begin
-    try
-      FController.DeletarUsuario(ID);
+    ShowMessage('Selecione um usuário para alterar.');
+    Exit;
+  end;
+
+  DS := DataSourceDb.DataSet;
+
+
+  DataNasc := FormatDateTime('dd/mm/yyyy', DS.FieldByName('DataNascimento').AsDateTime);
+
+  Frm := TForm2.Create(Self);
+  try
+    Frm.Inicializar(FController.Connection);
+
+    Frm.PreencherDados(
+      DS.FieldByName('ID').AsInteger,
+      DS.FieldByName('Nome').AsString,
+      DS.FieldByName('CPF').AsString,
+      DS.FieldByName('Telefone').AsString,
+      DataNasc,
+      DS.FieldByName('EstadoCivil').AsString,
+      DS.FieldByName('Endereco').AsString
+    );
+
+    if Frm.ShowModal = mrOk then
       CarregarGrid;
-    except
-      on E: Exception do
-        ShowMessage('Erro ao deletar: ' + E.Message);
-    end;
+  finally
+    Frm.Free;
+  end;
+end;
+
+procedure TForm1.SpBntDeletarClick(Sender: TObject);
+var
+  Frm: TForm2;
+  DS: TDataSet;
+  DataNasc: string;
+begin
+  if (DataSourceDb.DataSet = nil) or DataSourceDb.DataSet.IsEmpty then
+  begin
+    ShowMessage('Selecione um usuário para deletar.');
+    Exit;
+  end;
+
+  DS := DataSourceDb.DataSet;
+
+  DataNasc := FormatDateTime('dd/mm/yyyy', DS.FieldByName('DataNascimento').AsDateTime);
+
+  Frm := TForm2.Create(Self);
+  try
+    Frm.Inicializar(FController.Connection);
+    Frm.PreencherParaDeletar(
+      DS.FieldByName('ID').AsInteger,
+      DS.FieldByName('Nome').AsString,
+      DS.FieldByName('CPF').AsString,
+      DS.FieldByName('Telefone').AsString,
+      DataNasc,
+      DS.FieldByName('EstadoCivil').AsString,
+      DS.FieldByName('Endereco').AsString
+    );
+    if Frm.ShowModal = mrOk then
+      CarregarGrid;
+  finally
+    Frm.Free;
   end;
 end;
 

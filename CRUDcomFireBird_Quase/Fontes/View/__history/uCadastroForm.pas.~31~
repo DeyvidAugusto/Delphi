@@ -1,0 +1,241 @@
+unit uCadastroForm;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, Mask, StdCtrls, ExtCtrls, SqlExpr, uCadastroController;
+
+type
+  TForm2 = class(TForm)
+    Label1: TLabel;
+    Label2: TLabel;
+    LbCPF: TLabel;
+    LbEndereco: TLabel;
+    LbNascimento: TLabel;
+    LbNome: TLabel;
+    LbTelefone: TLabel;
+    CbEstadoCivil: TComboBox;
+    EdtEndereco: TEdit;
+    EdtID: TEdit;
+    EdtNome: TEdit;
+    MEdtCPF: TMaskEdit;
+    MEdtNascimento: TMaskEdit;
+    MEdtTelefone: TMaskEdit;
+    BntCancelar: TButton;
+    BntIncluir: TButton;
+    GroupBox1: TGroupBox;
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure BntIncluirClick(Sender: TObject);
+    procedure BntCancelarClick(Sender: TObject);
+    procedure EditIDKeyPress(Sender: TObject; var Key: Char);
+    procedure EdtOnExit(Sender: TObject);
+    procedure ResetarCampos;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+  private
+    executando: boolean;
+    FModoAlterar: Boolean;
+    FController: TCadastroController;
+    procedure HabilitarCampos(AHabilitar: Boolean);
+  public
+    procedure Inicializar(AConn: TSQLConnection);
+    procedure PreencherDados(AID: Integer; ANome, ACPF, ATelefone,
+      ANascimento, AEstadoCivil, AEndereco: string);
+  end;
+
+var
+  Form2: TForm2;
+
+implementation
+{$R *.dfm}
+
+
+procedure TForm2.Inicializar(AConn: TSQLConnection);
+begin
+  FController    := TCadastroController.Create(AConn);
+  FModoAlterar   := False;
+  EdtID.Text     := IntToStr(FController.ProximoID);
+  HabilitarCampos(False);
+  Position       := poScreenCenter;
+  CbEstadoCivil.ItemIndex := 0;
+end;
+
+procedure TForm2.PreencherDados(AID: Integer; ANome, ACPF, ATelefone,
+  ANascimento, AEstadoCivil, AEndereco: string);
+var
+  Idx: Integer;
+begin
+  FModoAlterar := True;
+
+  EdtID.Text           := IntToStr(AID);
+  EdtNome.Text         := ANome;
+  MEdtCPF.Text         := ACPF;
+  MEdtTelefone.Text    := ATelefone;
+  MEdtNascimento.Text  := ANascimento;
+  EdtEndereco.Text     := AEndereco;
+
+  for Idx := 0 to CbEstadoCivil.Items.Count - 1 do
+  begin
+    if Copy(CbEstadoCivil.Items[Idx], 1, 2) = Copy(AEstadoCivil, 1, 2) then
+    begin
+      CbEstadoCivil.ItemIndex := Idx;
+      Break;
+    end;
+  end;
+
+  EdtID.Enabled  := False;
+  HabilitarCampos(True);
+
+  BntIncluir.Caption := 'Alterar';
+
+  EdtNome.SetFocus;
+end;
+
+procedure TForm2.ResetarCampos;
+var
+  i: Integer;
+begin
+  for i := 0 to GroupBox1.ControlCount - 1 do
+  begin
+    if (GroupBox1.Controls[i] is TEdit) then
+      (GroupBox1.Controls[i] as TEdit).Clear;
+    if (GroupBox1.Controls[i] is TMaskEdit) then
+      (GroupBox1.Controls[i] as TMaskEdit).Clear;
+  end;
+  HabilitarCampos(False);
+  CbEstadoCivil.ItemIndex := 0;
+  EdtID.Text   := IntToStr(FController.ProximoID);
+  EdtID.SetFocus;
+end;
+
+procedure TForm2.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+   ModalResult := mrOk;
+end;
+
+procedure TForm2.FormCreate(Sender: TObject);
+begin
+  HabilitarCampos(False);
+  executando := false;
+  FModoAlterar  := False;
+end;
+
+procedure TForm2.FormDestroy(Sender: TObject);
+begin
+  FController.Free;
+end;
+
+procedure TForm2.HabilitarCampos(AHabilitar: Boolean);
+begin
+  EdtNome.Enabled       := AHabilitar;
+  EdtEndereco.Enabled   := AHabilitar;
+  MEdtCPF.Enabled       := AHabilitar;
+  MEdtNascimento.Enabled := AHabilitar;
+  MEdtTelefone.Enabled  := AHabilitar;
+  CbEstadoCivil.Enabled := AHabilitar;
+  BntIncluir.Enabled    := AHabilitar;
+end;
+
+procedure TForm2.EditIDKeyPress(Sender: TObject; var Key: Char);
+var
+  Mensagem: string;
+  ID: Integer;
+begin
+  if FModoAlterar then Exit;
+
+  if Key = #13 then
+  begin
+    Key := #0;
+
+    if not TryStrToInt(EdtID.Text, ID) then
+    begin
+      ShowMessage('ID inválido. Digite apenas números.');
+      EdtID.SetFocus;
+      Exit;
+    end;
+
+    if FController.ValidarID(ID, Mensagem) then
+    begin
+      EdtNome.Enabled       := True;
+      MEdtCPF.Enabled        := True;
+      MEdtTelefone.Enabled   := True;
+      MEdtNascimento.Enabled := True;
+      CbEstadoCivil.Enabled := True;
+      EdtEndereco.Enabled   := True;
+      BntIncluir.Enabled := True;
+
+      EdtNome.SetFocus;
+    end
+    else
+    begin
+      ShowMessage(Mensagem);
+      EdtID.SetFocus;
+    end;
+  end;
+end;
+
+procedure TForm2.EdtOnExit(Sender: TObject);
+var
+   Texto: string;
+begin
+   if ActiveControl = BntCancelar then
+      exit;
+
+   Texto := StringReplace(TEdit(Sender).Text, '.', '', [rfReplaceAll, rfIgnoreCase]);
+   Texto := StringReplace(Texto, '-', '', [rfReplaceAll, rfIgnoreCase]);
+   Texto := StringReplace(Texto, '/', '', [rfReplaceAll, rfIgnoreCase]);
+   Texto := StringReplace(Texto, '_', '', [rfReplaceAll, rfIgnoreCase]);
+   Texto := StringReplace(Texto, '(', '', [rfReplaceAll, rfIgnoreCase]);
+   Texto := StringReplace(Texto, ')', '', [rfReplaceAll, rfIgnoreCase]);
+   Texto := StringReplace(Texto, ' ', '', [rfReplaceAll, rfIgnoreCase]);
+
+   if Trim(Texto) = '' then
+   begin
+      ShowMessage('Valor Invalido!');
+      TEdit(Sender).SetFocus;
+   end;
+end;
+
+procedure TForm2.BntIncluirClick(Sender: TObject);
+var
+   DataNascimento, EstadoCivil: string;
+   DataObj : TDateTime;
+
+begin
+   if executando then
+      exit;
+
+   executando := true;
+   {Pega só os dois primeios numeros ex: 01 - Solteiro}
+   EstadoCivil := copy(CbEstadoCivil.Text,1, 2);
+   {Corrige o a data para adicionar ao firebird}
+   DataNascimento := MEdtNascimento.text;
+   DataObj := StrToDate(DataNascimento);
+   DataNascimento := FormatDateTime('yyyy-mm-dd', DataObj);
+
+   try
+      FController.Salvar(
+         StrToInt(EdtID.Text),
+         EdtNome.Text,
+         MEdtCPF.Text,
+         MEdtTelefone.Text,
+         DataNascimento,
+         EstadoCivil,
+         EdtEndereco.Text
+      );
+      ShowMessage('Cadastro realizado com sucesso!');
+   except
+     on E: Exception do
+       ShowMessage('Erro ao salvar: ' + E.Message);
+   end;
+   ResetarCampos;
+end;
+
+procedure TForm2.BntCancelarClick(Sender: TObject);
+begin
+  Close;
+
+end;
+
+end.

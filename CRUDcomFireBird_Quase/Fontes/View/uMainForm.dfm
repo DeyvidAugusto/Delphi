@@ -11,81 +11,16 @@ object Form1: TForm1
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   OnActivate = FormActivate
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  PixelsPerInch = 96
   TextHeight = 13
-  object GridUsuarios: TDBGrid
-    Left = 10
-    Top = 9
-    Width = 606
-    Height = 233
-    DataSource = DataSourceDb
-    Options = [dgEditing, dgTitles, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit]
-    ReadOnly = True
-    TabOrder = 0
-    TitleFont.Charset = DEFAULT_CHARSET
-    TitleFont.Color = clWindowText
-    TitleFont.Height = -11
-    TitleFont.Name = 'Tahoma'
-    TitleFont.Style = []
-    Columns = <
-      item
-        Expanded = False
-        FieldName = 'ID'
-        Title.Alignment = taCenter
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'Nome'
-        Title.Alignment = taCenter
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'CPF'
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'Telefone'
-        Title.Alignment = taCenter
-        Visible = True
-      end
-      item
-        Alignment = taCenter
-        Expanded = False
-        FieldName = 'DataNascimento'
-        Title.Alignment = taCenter
-        Title.Caption = 'Data De Nascimento'
-        Width = 105
-        Visible = True
-      end
-      item
-        Alignment = taCenter
-        Expanded = False
-        FieldName = 'EstadoCivil'
-        Title.Alignment = taCenter
-        Title.Caption = 'Estado Civil'
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'Endereco'
-        Title.Alignment = taCenter
-        Title.Caption = 'Endere'#231'o'
-        Visible = True
-      end>
-  end
   object Panel1: TPanel
     Left = 8
-    Top = 247
+    Top = 251
     Width = 607
     Height = 71
-    TabOrder = 1
+    TabOrder = 0
     object SpBntAlterar: TSpeedButton
       Left = 122
       Top = 1
@@ -345,9 +280,8 @@ object Form1: TForm1
         78FFEBB978FFEBB978FFEBB978FFEBB978FFEBB978FFEBB978FFEBB978FFEBB9
         78FFF4C68670}
       Layout = blGlyphTop
-      ExplicitLeft = 389
-      ExplicitTop = 0
-      ExplicitHeight = 70
+      ExplicitLeft = 358
+      ExplicitTop = 17
     end
     object SpBntInserir: TSpeedButton
       Left = 1
@@ -524,6 +458,83 @@ object Form1: TForm1
       ExplicitLeft = 509
       ExplicitTop = -8
       ExplicitHeight = 70
+    end
+  end
+  object GroupBox1: TGroupBox
+    Left = 8
+    Top = 0
+    Width = 608
+    Height = 247
+    TabOrder = 1
+    object Label1: TLabel
+      Left = 480
+      Top = 231
+      Width = 114
+      Height = 13
+      Caption = '0 registros encontrados'
+    end
+    object GridUsuarios: TDBGrid
+      Left = 3
+      Top = 3
+      Width = 600
+      Height = 224
+      DataSource = DataSourceDb
+      Options = [dgEditing, dgTitles, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit]
+      ReadOnly = True
+      TabOrder = 0
+      TitleFont.Charset = DEFAULT_CHARSET
+      TitleFont.Color = clWindowText
+      TitleFont.Height = -11
+      TitleFont.Name = 'Tahoma'
+      TitleFont.Style = []
+      Columns = <
+        item
+          Expanded = False
+          FieldName = 'ID'
+          Title.Alignment = taCenter
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'Nome'
+          Title.Alignment = taCenter
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'CPF'
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'Telefone'
+          Title.Alignment = taCenter
+          Visible = True
+        end
+        item
+          Alignment = taCenter
+          Expanded = False
+          FieldName = 'DataNascimento'
+          Title.Alignment = taCenter
+          Title.Caption = 'Data De Nascimento'
+          Width = 105
+          Visible = True
+        end
+        item
+          Alignment = taCenter
+          Expanded = False
+          FieldName = 'EstadoCivil'
+          Title.Alignment = taCenter
+          Title.Caption = 'Estado Civil'
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'Endereco'
+          Title.Alignment = taCenter
+          Title.Caption = 'Endere'#231'o'
+          Visible = True
+        end>
     end
   end
   object DataSourceDb: TDataSource
