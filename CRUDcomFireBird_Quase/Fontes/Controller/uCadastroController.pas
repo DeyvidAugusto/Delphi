@@ -13,6 +13,7 @@ type
     destructor Destroy; override;
     function ProximoID: Integer;
     function ValidarID(AID: Integer; out Mensagem: string): Boolean;
+    function BuscarPorID(AID: Integer; out Nome, CPF, Telefone, Nascimento, EstadoCivil, Endereco: string): Boolean;
     procedure Salvar(ID: Integer; Nome, CPF, Telefone, Nascimento, EstadoCivil, Endereco: string);
     procedure Alterar(ID: Integer; Nome, CPF, Telefone, Nascimento, EstadoCivil, Endereco: string);
     procedure Deletar(AID: Integer);
@@ -50,6 +51,30 @@ begin
     Exit;
   end;
   Result := True;
+end;
+
+function TCadastroController.BuscarPorID(AID: Integer;
+  out Nome, CPF, Telefone, Nascimento, EstadoCivil, Endereco: string): Boolean;
+var
+  Q: TSQLQuery;
+begin
+  Result := False;
+  Q := FDAO.BuscarPorID(AID);
+  try
+    if Q.IsEmpty then
+      Exit;
+
+    Nome        := Q.FieldByName('NOME').AsString;
+    CPF         := Q.FieldByName('CPF').AsString;
+    Telefone    := Q.FieldByName('TELEFONE').AsString;
+    { Converte a data do banco para dd/mm/yyyy para os MaskEdits do form }
+    Nascimento  := FormatDateTime('dd/mm/yyyy', Q.FieldByName('DATANASCIMENTO').AsDateTime);
+    EstadoCivil := Q.FieldByName('ESTADOCIVIL').AsString;
+    Endereco    := Q.FieldByName('ENDERECO').AsString;
+    Result := True;
+  finally
+    Q.Free;
+  end;
 end;
 
 procedure TCadastroController.Salvar(ID: Integer; Nome, CPF, Telefone,

@@ -14,6 +14,7 @@ type
          function ProximoID: Integer;
          function isIDDisponivel(AID: integer): boolean;
          function CarregarUsuarios: TSQLQuery;
+         function BuscarPorID(AID: Integer): TSQLQuery;
          procedure Deletar(AID: Integer);
          procedure Inserir(ID: Integer; Nome, CPF, Telefone, Nascimento, EstadoCivil, Endereco: string);
          procedure Atualizar(ID: Integer; Nome, CPF, Telefone, Nascimento, EstadoCivil, Endereco: string);
@@ -44,6 +45,14 @@ begin
    finally
       Q.Free;
    end;
+end;
+
+function TUsuarioDAO.BuscarPorID(AID: Integer): TSQLQuery;
+begin
+  Result := NovaQuery;
+  Result.SQL.Text := 'SELECT * FROM USUARIOS WHERE ID = :id';
+  Result.ParamByName('id').AsInteger := AID;
+  Result.Open;
 end;
 
 function TUsuarioDAO.isIDDisponivel(AID: Integer): boolean;

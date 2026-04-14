@@ -34,11 +34,15 @@ type
     procedure ResetarCampos;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
-   executando: boolean;
+    executando: boolean;
+    FModoAlterar: Boolean;
+    FModoDeletar: Boolean;
     FController: TCadastroController;
     procedure HabilitarCampos(AHabilitar: Boolean);
   public
     procedure Inicializar(AConn: TSQLConnection);
+    procedure AbrirModoDeletar(AID: Integer = 0);
+    procedure AbrirModoAlterar(AID: Integer = 0);
   end;
 
 var
@@ -50,11 +54,44 @@ implementation
 
 procedure TForm2.Inicializar(AConn: TSQLConnection);
 begin
-  FController  := TCadastroController.Create(AConn);
-  EdtID.Text   := IntToStr(FController.ProximoID);
+  FController    := TCadastroController.Create(AConn);
+  FModoAlterar   := False;
+  FModoDeletar   := False;
+  EdtID.Text     := IntToStr(FController.ProximoID);
   HabilitarCampos(False);
-  Position := poScreenCenter;
+  Position       := poScreenCenter;
   CbEstadoCivil.ItemIndex := 0;
+end;
+
+procedure TForm2.PreencherDados(AID: Integer; ANome, ACPF, ATelefone,
+  ANascimento, AEstadoCivil, AEndereco: string);
+var
+  Idx: Integer;
+begin
+  FModoAlterar := True;
+
+  EdtID.Text           := IntToStr(AID);
+  EdtNome.Text         := ANome;
+  MEdtCPF.Text         := ACPF;
+  MEdtTelefone.Text    := ATelefone;
+  MEdtNascimento.Text  := ANascimento;
+  EdtEndereco.Text     := AEndereco;
+
+  for Idx := 0 to CbEstadoCivil.Items.Count - 1 do
+  begin
+    if Copy(CbEstadoCivil.Items[Idx], 1, 2) = Copy(AEstadoCivil, 1, 2) then
+    begin
+      CbEstadoCivil.ItemIndex := Idx;
+      Break;
+    end;
+  end;
+
+  EdtID.Enabled  := False;
+  HabilitarCampos(True);
+
+  BntIncluir.Caption := 'Alterar';
+
+  EdtNome.SetFocus;
 end;
 
 procedure TForm2.ResetarCampos;
@@ -83,6 +120,8 @@ procedure TForm2.FormCreate(Sender: TObject);
 begin
   HabilitarCampos(False);
   executando := false;
+  FModoAlterar  := False;
+  FModoDeletar  := False;
 end;
 
 procedure TForm2.FormDestroy(Sender: TObject);
@@ -106,6 +145,8 @@ var
   Mensagem: string;
   ID: Integer;
 begin
+  if FModoAlterar or FModoDeletar then Exit;
+
   if Key = #13 then
   begin
     Key := #0;
@@ -159,39 +200,111 @@ begin
    end;
 end;
 
+procedure TForm2.PreencherParaDeletar(AID: Integer; ANome, ACPF, ATelefone,
+  ANascimento, AEstadoCivil, AEndereco: string);
+var
+  Idx: Integer;
+begin
+  FModoDeletar := True;
+
+  EdtID.Text           := IntToStr(AID);
+  EdtNome.Text         := ANome;
+  MEdtCPF.Text         := ACPF;
+  MEdtTelefone.Text    := ATelefone;
+  MEdtNascimento.Text  := ANascimento;
+  EdtEndereco.Text     := AEndereco;
+
+  for Idx := 0 to CbEstadoCivil.Items.Count - 1 do
+  begin
+    if Copy(CbEstadoCivil.Items[Idx], 1, 2) = Copy(AEstadoCivil, 1, 2) then
+    begin
+      CbEstadoCivil.ItemIndex := Idx;
+      Break;
+    end;
+  end;
+
+  EdtID.Enabled          := False;
+  HabilitarCampos(False);
+
+  BntIncluir.Enabled     := True;
+  BntIncluir.Caption     := 'Deletar';
+
+  BntIncluir.Font.Color  := clRed;
+  BntIncluir.Font.Style  := [fsBold];
+end;
+
 procedure TForm2.BntIncluirClick(Sender: TObject);
 var
    DataNascimento, EstadoCivil: string;
-   DataObj : TDateTime;
-
+   DataObj: TDateTime;
 begin
    if executando then
-      exit;
+      Exit;
 
-   executando := true;
-   {Pega só os dois primeios numeros ex: 01 - Solteiro}
-   EstadoCivil := copy(CbEstadoCivil.Text,1, 2);
-   {Corrige o a data para adicionar ao firebird}
-   DataNascimento := MEdtNascimento.text;
-   DataObj := StrToDate(DataNascimento);
-   DataNascimento := FormatDateTime('yyyy-mm-dd', DataObj);
+   executando := True;
 
    try
-      FController.Salvar(
-         StrToInt(EdtID.Text),
-         EdtNome.Text,
-         MEdtCPF.Text,
-         MEdtTelefone.Text,
-         DataNascimento,
-         EstadoCivil,
-         EdtEndereco.Text
-      );
-      ShowMessage('Cadastro realizado com sucesso!');
+      if FModoDeletar then
+      begin
+        { ===== MODO DELETAR ===== }
+        if MessageDlg('Confirma a exclusão do usuário "' + EdtNome.Text +
+          '" (ID ' + EdtID.Text + ')?' + #13#10 + 'Esta ação não pode ser desfeita.',
+          mtWarning, [mbYes, mbNo], 0) = mrYes then
+        begin
+          FController.Deletar(StrToInt(EdtID.Text));
+          ShowMessage('Usuário deletado com sucesso!');
+          Close;
+        end;
+        executando := False;
+        Exit;
+      end
+      else if FModoAlterar then
+      begin
+        { ===== MODO ALTERAR ===== }
+        EstadoCivil    := Copy(CbEstadoCivil.Text, 1, 2);
+        DataNascimento := MEdtNascimento.Text;
+        DataObj        := StrToDate(DataNascimento);
+        DataNascimento := FormatDateTime('yyyy-mm-dd', DataObj);
+
+        FController.Alterar(
+           StrToInt(EdtID.Text),
+           EdtNome.Text,
+           MEdtCPF.Text,
+           MEdtTelefone.Text,
+           DataNascimento,
+           EstadoCivil,
+           EdtEndereco.Text
+        );
+        ShowMessage('Dados alterados com sucesso!');
+        { Fecha o form após alterar }
+        Close;
+      end
+      else
+      begin
+        { ===== MODO INCLUIR ===== }
+        EstadoCivil    := Copy(CbEstadoCivil.Text, 1, 2);
+        DataNascimento := MEdtNascimento.Text;
+        DataObj        := StrToDate(DataNascimento);
+        DataNascimento := FormatDateTime('yyyy-mm-dd', DataObj);
+
+        FController.Salvar(
+           StrToInt(EdtID.Text),
+           EdtNome.Text,
+           MEdtCPF.Text,
+           MEdtTelefone.Text,
+           DataNascimento,
+           EstadoCivil,
+           EdtEndereco.Text
+        );
+        ShowMessage('Cadastro realizado com sucesso!');
+        ResetarCampos;
+      end;
    except
      on E: Exception do
        ShowMessage('Erro ao salvar: ' + E.Message);
    end;
-   ResetarCampos;
+
+   executando := False;
 end;
 
 procedure TForm2.BntCancelarClick(Sender: TObject);

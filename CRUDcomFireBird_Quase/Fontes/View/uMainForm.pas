@@ -115,33 +115,19 @@ end;
 procedure TForm1.SpBntAlterarClick(Sender: TObject);
 var
   Frm: TForm2;
-  DS: TDataSet;
-  DataNasc: string;
+  IDSelecionado: Integer;
 begin
-  if (DataSourceDb.DataSet = nil) or DataSourceDb.DataSet.IsEmpty then
-  begin
-    ShowMessage('Selecione um usuário para alterar.');
-    Exit;
-  end;
-
-  DS := DataSourceDb.DataSet;
-
-
-  DataNasc := FormatDateTime('dd/mm/yyyy', DS.FieldByName('DataNascimento').AsDateTime);
-
   Frm := TForm2.Create(Self);
   try
     Frm.Inicializar(FController.Connection);
 
-    Frm.PreencherDados(
-      DS.FieldByName('ID').AsInteger,
-      DS.FieldByName('Nome').AsString,
-      DS.FieldByName('CPF').AsString,
-      DS.FieldByName('Telefone').AsString,
-      DataNasc,
-      DS.FieldByName('EstadoCivil').AsString,
-      DS.FieldByName('Endereco').AsString
-    );
+    { Se houver linha selecionada no grid passa o ID; senão o usuário digita }
+    if (DataSourceDb.DataSet <> nil) and not DataSourceDb.DataSet.IsEmpty then
+      IDSelecionado := DataSourceDb.DataSet.FieldByName('ID').AsInteger
+    else
+      IDSelecionado := 0;
+
+    Frm.AbrirModoAlterar(IDSelecionado);
 
     if Frm.ShowModal = mrOk then
       CarregarGrid;
@@ -153,37 +139,27 @@ end;
 procedure TForm1.SpBntDeletarClick(Sender: TObject);
 var
   Frm: TForm2;
-  DS: TDataSet;
-  DataNasc: string;
+  IDSelecionado: Integer;
 begin
-  if (DataSourceDb.DataSet = nil) or DataSourceDb.DataSet.IsEmpty then
-  begin
-    ShowMessage('Selecione um usuário para deletar.');
-    Exit;
-  end;
-
-  DS := DataSourceDb.DataSet;
-
-  DataNasc := FormatDateTime('dd/mm/yyyy', DS.FieldByName('DataNascimento').AsDateTime);
-
   Frm := TForm2.Create(Self);
   try
     Frm.Inicializar(FController.Connection);
-    Frm.PreencherParaDeletar(
-      DS.FieldByName('ID').AsInteger,
-      DS.FieldByName('Nome').AsString,
-      DS.FieldByName('CPF').AsString,
-      DS.FieldByName('Telefone').AsString,
-      DataNasc,
-      DS.FieldByName('EstadoCivil').AsString,
-      DS.FieldByName('Endereco').AsString
-    );
+
+    { Se houver linha selecionada no grid passa o ID; senão o usuário digita }
+    if (DataSourceDb.DataSet <> nil) and not DataSourceDb.DataSet.IsEmpty then
+      IDSelecionado := DataSourceDb.DataSet.FieldByName('ID').AsInteger
+    else
+      IDSelecionado := 0;
+
+    Frm.AbrirModoDeletar(IDSelecionado);
+
     if Frm.ShowModal = mrOk then
       CarregarGrid;
   finally
     Frm.Free;
   end;
 end;
+
 
 procedure TForm1.SpBntSairClick(Sender: TObject);
 begin
