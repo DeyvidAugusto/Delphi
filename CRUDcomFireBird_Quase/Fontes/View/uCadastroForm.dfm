@@ -55,6 +55,19 @@ object Form2: TForm2
       Height = 13
       Caption = 'Nascimento'
     end
+    object LbAtalhosData: TLabel
+      Left = 140
+      Top = 176
+      Width = 106
+      Height = 13
+      Caption = '[F2]1'#176'dia  [F3]Hoje  [F4]Ult.'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clGrayText
+      Font.Height = -9
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+    end
     object LbNome: TLabel
       Left = 16
       Top = 112
@@ -77,6 +90,7 @@ object Form2: TForm2
       Enabled = False
       TabOrder = 0
       OnExit = EdtOnExit
+      OnKeyPress = TeclaEnter
       Items.Strings = (
         '01 - Solteiro(a)'
         '02 - Casado(a)'
@@ -92,6 +106,7 @@ object Form2: TForm2
       Enabled = False
       TabOrder = 1
       OnExit = EdtOnExit
+      OnKeyPress = TeclaEnter
     end
     object EdtID: TEdit
       Left = 16
@@ -109,6 +124,7 @@ object Form2: TForm2
       Enabled = False
       TabOrder = 3
       OnExit = EdtOnExit
+      OnKeyPress = TeclaEnter
     end
     object MEdtCPF: TMaskEdit
       Left = 289
@@ -121,6 +137,7 @@ object Form2: TForm2
       TabOrder = 4
       Text = '   .   .   -  '
       OnExit = EdtOnExit
+      OnKeyPress = TeclaEnter
     end
     object MEdtNascimento: TMaskEdit
       Left = 16
@@ -132,7 +149,9 @@ object Form2: TForm2
       MaxLength = 10
       TabOrder = 5
       Text = '  /  /    '
-      OnExit = EdtOnExit
+      OnExit = MEdtNascimentoExit
+      OnKeyDown = MEdtNascimentoKeyDown
+      OnKeyPress = TeclaEnter
     end
     object MEdtTelefone: TMaskEdit
       Left = 410
@@ -145,6 +164,7 @@ object Form2: TForm2
       TabOrder = 6
       Text = '(  )     -    '
       OnExit = EdtOnExit
+      OnKeyPress = TeclaEnter
     end
   end
   object BntCancelar: TButton

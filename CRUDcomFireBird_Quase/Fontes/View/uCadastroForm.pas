@@ -33,6 +33,10 @@ type
     procedure EdtOnExit(Sender: TObject);
     procedure ResetarCampos;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure MEdtNascimentoKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure MEdtNascimentoExit(Sender: TObject);
+    procedure TeclaEnter(Sender: TObject; var Key: Char);
   private
     executando: boolean;
     FModoAlterar: Boolean;
@@ -51,6 +55,36 @@ var
 
 implementation
 {$R *.dfm}
+
+function DiasNoMes(Data: TDateTime): Integer;
+const
+  DiasMes: array[1..12] of Integer = (31,28,31,30,31,30,31,31,30,31,30,31);
+var
+  Ano, Mes: Word;
+begin
+  DecodeDate(Data, Ano, Mes, Result);
+  if Mes = 2 then
+  begin
+    if (Ano mod 4 = 0) and ((Ano mod 100 <> 0) or (Ano mod 400 = 0)) then
+      Result := 29
+    else
+      Result := 28;
+  end
+  else
+    Result := DiasMes[Mes];
+end;
+
+function DataNascimentoToString(Data: string): string;
+var
+  DataObj: TDateTime;
+begin
+  Result := '';
+  if Trim(Data) <> '' then
+  begin
+    DataObj := StrToDate(Data);
+    Result := FormatDateTime('yyyy-mm-dd', DataObj);
+  end;
+end;
 
 
 procedure TForm2.Inicializar(AConn: TSQLConnection);
@@ -133,16 +167,16 @@ begin
       Break;
     end;
 
-  EdtID.Enabled := False;   { ID confirmado — trava }
+  EdtID.Enabled := False;   { ID confirmado ï¿½ trava }
 
   if FModoAlterar then
   begin
-    HabilitarCampos(True);  { campos editáveis }
+    HabilitarCampos(True);  { campos editï¿½veis }
     EdtNome.SetFocus;
   end
   else
   begin
-    HabilitarCampos(False); { campos só leitura no modo deletar }
+    HabilitarCampos(False); { campos sï¿½ leitura no modo deletar }
     BntIncluir.Enabled := True;
   end;
 end;
@@ -217,12 +251,12 @@ begin
 
   if FModoAlterar or FModoDeletar then
   begin
-    { Modos Alterar/Deletar: busca o usuário pelo ID }
+    { Modos Alterar/Deletar: busca o usuï¿½rio pelo ID }
     CarregarCamposPorID(ID);
   end
   else
   begin
-    { Modo Incluir: verifica se o ID está disponível }
+    { Modo Incluir: verifica se o ID estï¿½ disponï¿½vel }
     if FController.ValidarID(ID, Mensagem) then
     begin
       HabilitarCampos(True);
@@ -243,7 +277,16 @@ begin
    if ActiveControl = BntCancelar then
       exit;
 
-   Texto := StringReplace(TEdit(Sender).Text, '.', '', [rfReplaceAll, rfIgnoreCase]);
+   if Sender is TEdit then
+      Texto := TEdit(Sender).Text
+   else if Sender is TMaskEdit then
+      Texto := TMaskEdit(Sender).Text
+   else if Sender is TComboBox then
+      Texto := TComboBox(Sender).Text
+   else
+      Exit;
+
+   Texto := StringReplace(Texto, '.', '', [rfReplaceAll, rfIgnoreCase]);
    Texto := StringReplace(Texto, '-', '', [rfReplaceAll, rfIgnoreCase]);
    Texto := StringReplace(Texto, '/', '', [rfReplaceAll, rfIgnoreCase]);
    Texto := StringReplace(Texto, '_', '', [rfReplaceAll, rfIgnoreCase]);
@@ -254,71 +297,83 @@ begin
    if Trim(Texto) = '' then
    begin
       ShowMessage('Valor Invalido!');
-      TEdit(Sender).SetFocus;
+      if Sender is TEdit then
+         TEdit(Sender).SetFocus
+      else if Sender is TMaskEdit then
+         TMaskEdit(Sender).SetFocus;
    end;
 end;
 
 
 procedure TForm2.BntIncluirClick(Sender: TObject);
 var
+  ID: Integer;
   DataNascimento, EstadoCivil: string;
-  DataObj: TDateTime;
 begin
   if executando then Exit;
   executando := True;
 
   try
+    if not TryStrToInt(EdtID.Text, ID) then
+    begin
+      ShowMessage('ID inv'+#225+'lido!');
+      EdtID.SetFocus;
+      executando := False;
+      Exit;
+    end;
+
+    if (FModoAlterar or not FModoDeletar) and (Trim(EdtNome.Text) = '') then
+    begin
+      ShowMessage('Nome '+#233+' obrigat'+#243+'rio!');
+      EdtNome.SetFocus;
+      executando := False;
+      Exit;
+    end;
+
     if FModoDeletar then
     begin
-      { ===== MODO DELETAR ===== }
       if MessageDlg('Confirma a exclus'+#227+'o do usu'+#225+'rio "' + EdtNome.Text +
         '" (ID ' + EdtID.Text + ')?' + #13#10 + 'Esta a'+#231+#227+'o n'+#227+'o pode ser desfeita.',
         mtWarning, [mbYes, mbNo], 0) = mrYes then
       begin
-        FController.Deletar(StrToInt(EdtID.Text));
+        FController.Deletar(ID);
         ShowMessage('Usu'+#225+'rio deletado com sucesso!');
         Close;
       end;
     end
-    else if FModoAlterar then
-    begin
-      { ===== MODO ALTERAR ===== }
-      EstadoCivil    := Copy(CbEstadoCivil.Text, 1, 2);
-      DataNascimento := MEdtNascimento.Text;
-      DataObj        := StrToDate(DataNascimento);
-      DataNascimento := FormatDateTime('yyyy-mm-dd', DataObj);
-
-      FController.Alterar(
-        StrToInt(EdtID.Text),
-        EdtNome.Text,
-        MEdtCPF.Text,
-        MEdtTelefone.Text,
-        DataNascimento,
-        EstadoCivil,
-        EdtEndereco.Text
-      );
-      ShowMessage('Dados alterados com sucesso!');
-      Close;
-    end
     else
     begin
-      { ===== MODO INCLUIR ===== }
       EstadoCivil    := Copy(CbEstadoCivil.Text, 1, 2);
-      DataNascimento := MEdtNascimento.Text;
-      DataObj        := StrToDate(DataNascimento);
-      DataNascimento := FormatDateTime('yyyy-mm-dd', DataObj);
+      DataNascimento := DataNascimentoToString(MEdtNascimento.Text);
 
-      FController.Salvar(
-        StrToInt(EdtID.Text),
-        EdtNome.Text,
-        MEdtCPF.Text,
-        MEdtTelefone.Text,
-        DataNascimento,
-        EstadoCivil,
-        EdtEndereco.Text
-      );
-      ShowMessage('Cadastro realizado com sucesso!');
-      ResetarCampos;
+      if FModoAlterar then
+      begin
+        FController.Alterar(
+          ID,
+          EdtNome.Text,
+          MEdtCPF.Text,
+          MEdtTelefone.Text,
+          DataNascimento,
+          EstadoCivil,
+          EdtEndereco.Text
+        );
+        ShowMessage('Dados alterados com sucesso!');
+        Close;
+      end
+      else
+      begin
+        FController.Salvar(
+          ID,
+          EdtNome.Text,
+          MEdtCPF.Text,
+          MEdtTelefone.Text,
+          DataNascimento,
+          EstadoCivil,
+          EdtEndereco.Text
+        );
+        ShowMessage('Cadastro realizado com sucesso!');
+        ResetarCampos;
+      end;
     end;
   except
     on E: Exception do
@@ -331,7 +386,65 @@ end;
 procedure TForm2.BntCancelarClick(Sender: TObject);
 begin
   Close;
+end;
 
+procedure TForm2.MEdtNascimentoKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  DataAtual: TDateTime;
+  Ano, Mes, Dia: Word;
+  PrimeiroDia, UltimoDia: TDateTime;
+begin
+  if not MEdtNascimento.Enabled then
+    Exit;
+
+  DataAtual := Date;
+  DecodeDate(DataAtual, Ano, Mes, Dia);
+
+  PrimeiroDia := EncodeDate(Ano, Mes, 1);
+  UltimoDia  := EncodeDate(Ano, Mes, DiasNoMes(DataAtual));
+
+  case Key of
+    VK_F2: MEdtNascimento.Text := FormatDateTime('dd/mm/yyyy', PrimeiroDia);
+    VK_F3: MEdtNascimento.Text := FormatDateTime('dd/mm/yyyy', DataAtual);
+    VK_F4: MEdtNascimento.Text := FormatDateTime('dd/mm/yyyy', UltimoDia);
+  end;
+end;
+
+procedure TForm2.MEdtNascimentoExit(Sender: TObject);
+var
+  DataObj: TDateTime;
+begin
+  if ActiveControl = BntCancelar then
+    Exit;
+
+  if Trim(MEdtNascimento.Text) = '  /  /    ' then
+    Exit;
+
+  try
+    DataObj := StrToDate(MEdtNascimento.Text);
+
+    if DataObj > Date then
+    begin
+      ShowMessage('Data de nascimento n'+#227+'o pode ser futura!');
+      MEdtNascimento.SetFocus;
+    end;
+  except
+    on E: Exception do
+    begin
+      ShowMessage('Data inv'+#225+'lida!');
+      MEdtNascimento.SetFocus;
+    end;
+  end;
+end;
+
+procedure TForm2.TeclaEnter(Sender: TObject; var Key: Char);
+begin
+  if Key = #13 then
+  begin
+    Key := #0;
+    SelectNext(ActiveControl as TWinControl, True, True);
+  end;
 end;
 
 end.
