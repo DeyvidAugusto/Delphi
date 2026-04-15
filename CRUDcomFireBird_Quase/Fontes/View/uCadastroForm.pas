@@ -309,6 +309,22 @@ procedure TForm2.BntIncluirClick(Sender: TObject);
 var
   ID: Integer;
   DataNascimento, EstadoCivil: string;
+  TempTexto: string;
+
+  function CampoValido(ATexto: string): Boolean;
+  var
+    TextoSemMascara: string;
+  begin
+    TextoSemMascara := StringReplace(ATexto, '.', '', [rfReplaceAll, rfIgnoreCase]);
+    TextoSemMascara := StringReplace(TextoSemMascara, '-', '', [rfReplaceAll, rfIgnoreCase]);
+    TextoSemMascara := StringReplace(TextoSemMascara, '/', '', [rfReplaceAll, rfIgnoreCase]);
+    TextoSemMascara := StringReplace(TextoSemMascara, '_', '', [rfReplaceAll, rfIgnoreCase]);
+    TextoSemMascara := StringReplace(TextoSemMascara, '(', '', [rfReplaceAll, rfIgnoreCase]);
+    TextoSemMascara := StringReplace(TextoSemMascara, ')', '', [rfReplaceAll, rfIgnoreCase]);
+    TextoSemMascara := StringReplace(TextoSemMascara, ' ', '', [rfReplaceAll, rfIgnoreCase]);
+    Result := Trim(TextoSemMascara) <> '';
+  end;
+
 begin
   if executando then Exit;
   executando := True;
@@ -328,6 +344,49 @@ begin
       EdtNome.SetFocus;
       executando := False;
       Exit;
+    end;
+
+    if (FModoAlterar or not FModoDeletar) then
+    begin
+      if not CampoValido(MEdtCPF.Text) then
+      begin
+        ShowMessage('CPF '+#233+' obrigat'+#243+'rio!');
+        MEdtCPF.SetFocus;
+        executando := False;
+        Exit;
+      end;
+
+      if not CampoValido(MEdtTelefone.Text) then
+      begin
+        ShowMessage('Telefone '+#233+' obrigat'+#243+'rio!');
+        MEdtTelefone.SetFocus;
+        executando := False;
+        Exit;
+      end;
+
+      if not CampoValido(MEdtNascimento.Text) then
+      begin
+        ShowMessage('Data de nascimento '+#233+' obrigat'+#243+'ria!');
+        MEdtNascimento.SetFocus;
+        executando := False;
+        Exit;
+      end;
+
+      if Trim(CbEstadoCivil.Text) = '' then
+      begin
+        ShowMessage('Estado civil '+#233+' obrigat'+#243+'rio!');
+        CbEstadoCivil.SetFocus;
+        executando := False;
+        Exit;
+      end;
+
+      if Trim(EdtEndereco.Text) = '' then
+      begin
+        ShowMessage('Endereço '+#233+' obrigat'+#243+'rio!');
+        EdtEndereco.SetFocus;
+        executando := False;
+        Exit;
+      end;
     end;
 
     if FModoDeletar then

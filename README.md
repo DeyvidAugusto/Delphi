@@ -4,19 +4,17 @@ Este repositório contém uma coleção de exercícios e projetos em Delphi dese
 
 ## Estrutura do Projeto
 
-O projeto está organizado em várias pastas, incluindo listas de exercícios e projetos específicos:
-
 ### Lista_01
 
 Contém exercícios básicos para iniciantes:
 
 - **1 Olá Mundo**: Primeiro programa em Delphi.
-- **2 Média Notas**: Cálculo da média de notas.
+- **2 Media Notas**: Cálculo da média de notas.
 - **3 Calculadora**: Implementação de uma calculadora simples.
-- **4 Ímpar e Par**: Verificação se um número é ímpar ou par.
+- **4 Impar e Par**: Verificação se um número é ímpar ou par.
 - **5 Tabuada**: Geração de tabuadas.
-- **6 Feliz Ano Novo**: Programa para mensagem de ano novo.
-- **7 Maior e Menor**: Encontrar o maior e menor número em uma lista.
+- **6 Feliz ano novo**: Programa para mensagem de ano novo.
+- **7 Maior e menor**: Encontrar o maior e menor número em uma lista.
 - **8 Contar Vogais**: Contagem de vogais em uma string.
 - **9 Primos**: Verificação de números primos.
 
@@ -48,12 +46,12 @@ Projetos de componentes personalizados:
 - **Form**: Formulário de exemplo.
 - **PackageComponentes**: Pacote de componentes Delphi.
 
-### CRUD com FireBird
+### CRUDcomFireBird_Quase / CRUDcomFireBird02
 
 Aplicação CRUD (Create, Read, Update, Delete) utilizando FireBird como banco de dados:
 
-- **uCadastroForm**: Formulário de cadastro.
-- **uMainForm**: Formulário principal.
+- **ProjectCRUDcomBancoDeDados**: Projeto principal com formulários de cadastro.
+- **Database**: Pasta contendo arquivos do banco de dados FireBird.
 
 ### EmailObserver
 
